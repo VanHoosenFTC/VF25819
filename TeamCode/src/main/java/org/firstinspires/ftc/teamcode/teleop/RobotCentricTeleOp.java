@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_N
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.components.BindingsComponent;
@@ -50,6 +51,8 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().x().whenBecomesTrue(Intake.INSTANCE.start);
         Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
         Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
+
+        //Gamepads.gamepad2().rightTrigger().
 
     }
 }

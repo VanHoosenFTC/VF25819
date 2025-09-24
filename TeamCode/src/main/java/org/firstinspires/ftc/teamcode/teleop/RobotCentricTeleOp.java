@@ -52,7 +52,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
         Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
 
-        //Gamepads.gamepad2().rightTrigger().
+         Gamepads.gamepad2().rightTrigger().asButton()
 
     }
 }

@@ -11,7 +11,7 @@ public class Launcher implements Subsystem {
     public static final Launcher INSTANCE = new Launcher();
     private Launcher() { }
 
-    private MotorEx motor = new MotorEx("INTAKE");
+    private MotorEx motor = new MotorEx("LAUNCHER");
 
     private ControlSystem controlSystem  = ControlSystem.builder()
             .velPid(0.0005, 0, 0)

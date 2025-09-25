@@ -24,6 +24,7 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     public RobotCentricTeleOp() {
         addComponents(
                 new SubsystemComponent(Intake.INSTANCE),
+                new SubsystemComponent(Launcher.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -52,7 +53,8 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
         Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
 
-         Gamepads.gamepad2().rightTrigger().asButton()
+        Gamepads.gamepad2().rightTrigger ().atLeast(50).whenBecomesTrue(Launcher.INSTANCE.start);
+        Gamepads.gamepad2().rightTrigger().lessThan(50).whenBecomesTrue(Launcher.INSTANCE.stop);
 
     }
 }

@@ -53,8 +53,15 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
         Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
 
-        Gamepads.gamepad2().rightTrigger ().atLeast(50).whenBecomesTrue(Launcher.INSTANCE.start);
+        Gamepads.gamepad2().rightTrigger().atLeast(50).whenBecomesTrue(Launcher.INSTANCE.start);
         Gamepads.gamepad2().rightTrigger().lessThan(50).whenBecomesTrue(Launcher.INSTANCE.stop);
+
+    }
+
+    @Override
+    public void onUpdate() {
+        telemetry.addData("righttrigger value", Gamepads.gamepad2().rightTrigger().get().doubleValue());
+        telemetry.update();
 
     }
 }

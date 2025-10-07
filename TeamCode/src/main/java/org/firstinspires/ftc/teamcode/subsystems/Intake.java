@@ -23,6 +23,7 @@ public class Intake implements Subsystem {
     public Command stop = new RunToVelocity(controlSystem, 0).requires(this);
     public Command reverse = new RunToVelocity(controlSystem, -10145).requires(this);
 
+
     @Override
     public void periodic() {
         motor.setPower(controlSystem.calculate(motor.getState()));

@@ -16,12 +16,15 @@ import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
+import dev.nextftc.hardware.driving.FieldCentric;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
+import dev.nextftc.hardware.impl.Direction;
+import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
-@TeleOp(name = "Robot Centric TeleOp")
-public class RobotCentricTeleOp extends NextFTCOpMode {
-    public RobotCentricTeleOp() {
+@TeleOp(name = "Field Centric TeleOp")
+public class FieldCentricTeleOp extends NextFTCOpMode {
+    public FieldCentricTeleOp() {
         addComponents(
                 new SubsystemComponent(Intake.INSTANCE),
                 new SubsystemComponent(Launcher.INSTANCE),
@@ -36,6 +39,8 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
     private final MotorEx backLeftMotor = new MotorEx(LEFT_REAR_MOTOR_NAME).reversed();
     private final MotorEx backRightMotor = new MotorEx(RIGHT_REAR_MOTOR_NAME);
 
+    private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.LEFT).zeroed();
+
     @Override
     public void onStartButtonPressed() {
         Command driverControlled = new MecanumDriverControlled(
@@ -45,7 +50,8 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 backRightMotor,
                 Gamepads.gamepad1().leftStickY().negate(),
                 Gamepads.gamepad1().leftStickX(),
-                Gamepads.gamepad1().rightStickX()
+                Gamepads.gamepad1().rightStickX(),
+                new FieldCentric(imu)
         );
         driverControlled.schedule();
 

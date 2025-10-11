@@ -5,6 +5,8 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.LEFT_REAR_MOTOR_NA
 import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_FRONT_MOTOR_NAME;
 import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_NAME;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -20,25 +22,10 @@ import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.MotorEx;
 
 @TeleOp(name = "Robot Centric TeleOp")
-public class RobotCentricTeleOp extends NextFTCOpMode {
-    public RobotCentricTeleOp() {
-        addComponents(
-                new SubsystemComponent(Intake.INSTANCE),
-                new SubsystemComponent(Launcher.INSTANCE),
-                BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE
-        );
-    }
-
-    // change the names and directions to suit your robot
-    private final MotorEx frontLeftMotor = new MotorEx(LEFT_FRONT_MOTOR_NAME).reversed();
-    private final MotorEx frontRightMotor = new MotorEx(RIGHT_FRONT_MOTOR_NAME);
-    private final MotorEx backLeftMotor = new MotorEx(LEFT_REAR_MOTOR_NAME).reversed();
-    private final MotorEx backRightMotor = new MotorEx(RIGHT_REAR_MOTOR_NAME);
-
-    @Override
-    public void onStartButtonPressed() {
-        Command driverControlled = new MecanumDriverControlled(
+public class RobotCentricTeleOp extends AbstractDriveTeleOp {
+    @NonNull
+    Command getDriverControlledCommand() {
+        return new MecanumDriverControlled(
                 frontLeftMotor,
                 frontRightMotor,
                 backLeftMotor,
@@ -47,23 +34,5 @@ public class RobotCentricTeleOp extends NextFTCOpMode {
                 Gamepads.gamepad1().leftStickX(),
                 Gamepads.gamepad1().rightStickX()
         );
-        driverControlled.schedule();
-
-        Gamepads.gamepad2().x().whenBecomesTrue(Intake.INSTANCE.start);
-        Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
-        Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
-
-        Gamepads.gamepad2().rightTrigger().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
-        Gamepads.gamepad2().rightTrigger().lessThan(0.5).whenBecomesTrue(Launcher.INSTANCE.stop);
-
-        Gamepads.gamepad2().rightBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(0.05));
-        Gamepads.gamepad2().leftBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(-0.05));
-    }
-
-    @Override
-    public void onUpdate() {
-        telemetry.addData("righttrigger value", Gamepads.gamepad2().rightTrigger().get().doubleValue());
-        telemetry.update();
-
     }
 }

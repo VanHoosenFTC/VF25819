@@ -1,49 +1,21 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import static org.firstinspires.ftc.teamcode.ChassisConstants.LEFT_FRONT_MOTOR_NAME;
-import static org.firstinspires.ftc.teamcode.ChassisConstants.LEFT_REAR_MOTOR_NAME;
-import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_FRONT_MOTOR_NAME;
-import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_NAME;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Launcher;
-
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.components.BindingsComponent;
-import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
-import dev.nextftc.ftc.NextFTCOpMode;
-import dev.nextftc.ftc.components.BulkReadComponent;
 import dev.nextftc.hardware.driving.FieldCentric;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.Direction;
 import dev.nextftc.hardware.impl.IMUEx;
-import dev.nextftc.hardware.impl.MotorEx;
 
 @TeleOp(name = "Field Centric TeleOp")
-public class FieldCentricTeleOp extends NextFTCOpMode {
-    public FieldCentricTeleOp() {
-        addComponents(
-                new SubsystemComponent(Intake.INSTANCE),
-                new SubsystemComponent(Launcher.INSTANCE),
-                BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE
-        );
-    }
-
-    // change the names and directions to suit your robot
-    private final MotorEx frontLeftMotor = new MotorEx(LEFT_FRONT_MOTOR_NAME).reversed();
-    private final MotorEx frontRightMotor = new MotorEx(RIGHT_FRONT_MOTOR_NAME);
-    private final MotorEx backLeftMotor = new MotorEx(LEFT_REAR_MOTOR_NAME).reversed();
-    private final MotorEx backRightMotor = new MotorEx(RIGHT_REAR_MOTOR_NAME);
-
-    private IMUEx imu = new IMUEx("imu", Direction.UP, Direction.LEFT).zeroed();
+public class FieldCentricTeleOp extends AbstractDriveTeleOp {
+    private final IMUEx imu = new IMUEx("imu", Direction.UP, Direction.LEFT).zeroed();
 
     @Override
-    public void onStartButtonPressed() {
-        Command driverControlled = new MecanumDriverControlled(
+    Command getDriverControlledCommand() {
+        return new MecanumDriverControlled(
                 frontLeftMotor,
                 frontRightMotor,
                 backLeftMotor,
@@ -53,21 +25,5 @@ public class FieldCentricTeleOp extends NextFTCOpMode {
                 Gamepads.gamepad1().rightStickX(),
                 new FieldCentric(imu)
         );
-        driverControlled.schedule();
-
-        Gamepads.gamepad2().x().whenBecomesTrue(Intake.INSTANCE.start);
-        Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
-        Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
-
-        Gamepads.gamepad2().rightTrigger().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
-        Gamepads.gamepad2().rightTrigger().lessThan(0.5).whenBecomesTrue(Launcher.INSTANCE.stop);
-
-    }
-
-    @Override
-    public void onUpdate() {
-        telemetry.addData("righttrigger value", Gamepads.gamepad2().rightTrigger().get().doubleValue());
-        telemetry.update();
-
     }
 }

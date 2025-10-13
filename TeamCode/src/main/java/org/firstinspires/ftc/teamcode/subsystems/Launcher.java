@@ -13,7 +13,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 public class Launcher implements Subsystem {
     public static final Launcher INSTANCE = new Launcher();
     private Launcher() { }
-    private double powerFactor=0.5;
+    private double powerFactor=0.35;
     private MotorEx motor = new MotorEx("LAUNCHER");
 
     private ControlSystem controlSystem  = ControlSystem.builder()

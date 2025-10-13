@@ -5,8 +5,11 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.LEFT_REAR_MOTOR_NA
 import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_FRONT_MOTOR_NAME;
 import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_NAME;
 
+import org.firstinspires.ftc.teamcode.subsystems.DynamicLauncher;
+import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Launcher;
+import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.Tilt;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.components.BindingsComponent;
@@ -25,8 +28,11 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
     public AbstractDriveTeleOp() {
         addComponents(
-                new SubsystemComponent(Intake.INSTANCE),
-                new SubsystemComponent(Launcher.INSTANCE),
+                new SubsystemComponent(DynamicLauncher.INSTANCE,
+                        Tilt.INSTANCE,
+                        Lift.INSTANCE,
+                        Gate.INSTANCE,
+                        Intake.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -41,18 +47,25 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
         Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
 
-        Gamepads.gamepad2().rightTrigger().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
-        Gamepads.gamepad2().rightTrigger().lessThan(0.5).whenBecomesTrue(Launcher.INSTANCE.stop);
+        Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(DynamicLauncher.INSTANCE.start);
+        Gamepads.gamepad2().leftStickY().lessThan(0.5).whenBecomesTrue(DynamicLauncher.INSTANCE.stop);
 
-        Gamepads.gamepad2().rightBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(0.05));
-        Gamepads.gamepad2().leftBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(-0.05));
+        Gamepads.gamepad2().rightStickButton().whenBecomesTrue(Lift.INSTANCE.score).whenBecomesFalse(Lift.INSTANCE.load);
+
+        Gamepads.gamepad2().rightBumper().whenBecomesTrue(DynamicLauncher.INSTANCE.adjustPowerFactor(0.05));
+        Gamepads.gamepad2().leftBumper().whenBecomesTrue(DynamicLauncher.INSTANCE.adjustPowerFactor(-0.05));
+
+        Gamepads.gamepad2().dpadLeft().whenBecomesTrue(Gate.INSTANCE.open);
+        Gamepads.gamepad2().dpadRight().whenBecomesTrue(Gate.INSTANCE.close);
+
+        Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
+        Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));
+
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-        telemetry.addData("righttrigger value", Gamepads.gamepad2().rightTrigger().get().doubleValue());
-        telemetry.update();
 
     }
 

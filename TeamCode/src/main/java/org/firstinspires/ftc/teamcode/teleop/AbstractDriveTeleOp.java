@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_N
 import org.firstinspires.ftc.teamcode.subsystems.DynamicLauncher;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Tilt;
 
@@ -32,7 +33,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
                         Tilt.INSTANCE,
                         Lift.INSTANCE,
                         Gate.INSTANCE,
-                        Intake.INSTANCE),
+                        Intake.INSTANCE,
+                        IntakeSubsystem.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -61,6 +63,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));
 
+        Gamepads.gamepad2().dpadDown().whenBecomesTrue(IntakeSubsystem.INSTANCE.start());
     }
 
     @Override

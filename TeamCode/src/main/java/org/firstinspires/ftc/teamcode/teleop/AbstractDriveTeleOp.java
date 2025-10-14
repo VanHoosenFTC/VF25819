@@ -32,8 +32,6 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
                 new SubsystemComponent(DynamicLauncher.INSTANCE,
                         Tilt.INSTANCE,
                         Lift.INSTANCE,
-                        Gate.INSTANCE,
-                        Intake.INSTANCE,
                         IntakeSubsystem.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
@@ -63,7 +61,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));
 
-        Gamepads.gamepad2().dpadDown().whenBecomesTrue(IntakeSubsystem.INSTANCE.start());
+        Gamepads.gamepad1().dpadUp().whenBecomesTrue(IntakeSubsystem.INSTANCE.start);
+        Gamepads.gamepad1().dpadDown().whenBecomesTrue(IntakeSubsystem.INSTANCE.stop);
     }
 
     @Override

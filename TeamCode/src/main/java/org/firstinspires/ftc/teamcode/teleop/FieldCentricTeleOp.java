@@ -11,7 +11,7 @@ import dev.nextftc.hardware.impl.IMUEx;
 
 @TeleOp(name = "Field Centric TeleOp")
 public class FieldCentricTeleOp extends AbstractDriveTeleOp {
-    private final IMUEx imu = new IMUEx("imu", Direction.UP, Direction.LEFT).zeroed();
+    private final IMUEx imu = new IMUEx("imu", Direction.RIGHT, Direction.UP).zeroed();
 
     @Override
     Command getDriverControlledCommand() {

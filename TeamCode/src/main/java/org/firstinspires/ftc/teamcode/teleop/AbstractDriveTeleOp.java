@@ -5,7 +5,7 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.LEFT_REAR_MOTOR_NA
 import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_FRONT_MOTOR_NAME;
 import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_NAME;
 
-import org.firstinspires.ftc.teamcode.subsystems.DynamicLauncher;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
@@ -29,7 +29,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
     public AbstractDriveTeleOp() {
         addComponents(
-                new SubsystemComponent(DynamicLauncher.INSTANCE,
+                new SubsystemComponent(Launcher.INSTANCE,
                         Tilt.INSTANCE,
                         Lift.INSTANCE,
                         IntakeSubsystem.INSTANCE),
@@ -47,13 +47,13 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
         Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
 
-        Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(DynamicLauncher.INSTANCE.start);
-        Gamepads.gamepad2().leftStickY().lessThan(0.5).whenBecomesTrue(DynamicLauncher.INSTANCE.stop);
+        Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
+        Gamepads.gamepad2().leftStickY().lessThan(0.5).whenBecomesTrue(Launcher.INSTANCE.stop);
 
         Gamepads.gamepad2().rightStickButton().whenBecomesTrue(Lift.INSTANCE.score).whenBecomesFalse(Lift.INSTANCE.load);
 
-        Gamepads.gamepad2().rightBumper().whenBecomesTrue(DynamicLauncher.INSTANCE.adjustPowerFactor(0.05));
-        Gamepads.gamepad2().leftBumper().whenBecomesTrue(DynamicLauncher.INSTANCE.adjustPowerFactor(-0.05));
+        Gamepads.gamepad2().rightBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(0.05));
+        Gamepads.gamepad2().leftBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(-0.05));
 
         Gamepads.gamepad2().dpadLeft().whenBecomesTrue(Gate.INSTANCE.open);
         Gamepads.gamepad2().dpadRight().whenBecomesTrue(Gate.INSTANCE.close);

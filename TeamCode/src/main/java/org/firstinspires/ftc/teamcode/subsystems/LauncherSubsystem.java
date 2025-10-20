@@ -9,8 +9,8 @@ import dev.nextftc.core.subsystems.SubsystemGroup;
 @Configurable
 public class LauncherSubsystem extends SubsystemGroup {
     public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
-    public double launcherWarmUp = 1.0;
-    public double scoringDelay = 0.5;
+    public static double launcherWarmUp = 2.0;
+    public static double scoringDelay = 1.0;
 
     private LauncherSubsystem() {
         super(

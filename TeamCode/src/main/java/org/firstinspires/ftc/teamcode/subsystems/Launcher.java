@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import dev.nextftc.core.commands.Command;
@@ -9,6 +10,7 @@ import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.MotorEx;
 
+@Configurable
 public class Launcher implements Subsystem {
     public static final Launcher INSTANCE = new Launcher();
 
@@ -16,11 +18,12 @@ public class Launcher implements Subsystem {
     // public static final int MAX_VELO = 10145;
 
     private Launcher() { }
-    private double powerFactor=0.5;
+    private static double powerFactor=0.75;
     private MotorEx motor = new MotorEx("LAUNCHER");
 
     public void initialize() {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor.reverse();
     }
 
     private double velo;

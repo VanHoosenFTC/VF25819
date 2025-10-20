@@ -28,5 +28,10 @@ public class Intake implements Subsystem {
     public void periodic() {
         motor.setPower(controlSystem.calculate(motor.getState()));
     }
+
+    @Override
+    public void initialize() {
+        motor.reverse();
+    }
 }
 

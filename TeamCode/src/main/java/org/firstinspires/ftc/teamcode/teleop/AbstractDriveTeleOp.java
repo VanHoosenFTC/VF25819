@@ -43,9 +43,9 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Command driverControlled = getDriverControlledCommand();
         driverControlled.schedule();
 
-        Gamepads.gamepad2().x().whenBecomesTrue(Intake.INSTANCE.start);
-        Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
-        Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
+        Gamepads.gamepad2().x().whenBecomesTrue(Intake.INSTANCE.reverse);
+        Gamepads.gamepad2().a().whenBecomesTrue(IntakeSubsystem.INSTANCE.stop);
+        Gamepads.gamepad2().b().whenBecomesTrue(IntakeSubsystem.INSTANCE.start);
 
         Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
         Gamepads.gamepad2().leftStickY().lessThan(0.5).whenBecomesTrue(Launcher.INSTANCE.stop);
@@ -61,10 +61,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));
 
-        Gamepads.gamepad1().dpadUp().whenBecomesTrue(IntakeSubsystem.INSTANCE.start);
-        Gamepads.gamepad1().dpadDown().whenBecomesTrue(IntakeSubsystem.INSTANCE.stop);
-
-        Gamepads.gamepad1().b().whenBecomesTrue(LauncherSubsystem.INSTANCE.launch);
+        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launch);
     }
 
     @Override

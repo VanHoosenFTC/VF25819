@@ -43,9 +43,9 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Command driverControlled = getDriverControlledCommand();
         driverControlled.schedule();
 
-        Gamepads.gamepad2().x().whenBecomesTrue(Intake.INSTANCE.reverse);
-        Gamepads.gamepad2().a().whenBecomesTrue(IntakeSubsystem.INSTANCE.stop);
-        Gamepads.gamepad2().b().whenBecomesTrue(IntakeSubsystem.INSTANCE.start);
+        Gamepads.gamepad1().x().whenBecomesTrue(Intake.INSTANCE.reverse);
+        Gamepads.gamepad1().a().whenBecomesTrue(IntakeSubsystem.INSTANCE.stop);
+        Gamepads.gamepad1().b().whenBecomesTrue(IntakeSubsystem.INSTANCE.start);
 
         Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
         Gamepads.gamepad2().leftStickY().lessThan(0.5).whenBecomesTrue(Launcher.INSTANCE.stop);

@@ -29,7 +29,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
     public AbstractDriveTeleOp() {
         addComponents(
-                new SubsystemComponent(DynamicLauncher.INSTANCE,
+                new SubsystemComponent(Launcher.INSTANCE,
                         Tilt.INSTANCE,
                         Lift.INSTANCE,
                         Gate.INSTANCE,
@@ -49,13 +49,13 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().a().whenBecomesTrue(Intake.INSTANCE.stop);
         Gamepads.gamepad2().b().whenBecomesTrue(Intake.INSTANCE.reverse);
 
-        Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(DynamicLauncher.INSTANCE.start);
-        Gamepads.gamepad2().leftStickY().lessThan(0.5).whenBecomesTrue(DynamicLauncher.INSTANCE.stop);
+        Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
+        Gamepads.gamepad2().leftStickY().lessThan(0.5).whenBecomesTrue(Launcher.INSTANCE.stop);
 
         Gamepads.gamepad2().rightStickButton().whenBecomesTrue(Lift.INSTANCE.score).whenBecomesFalse(Lift.INSTANCE.load);
 
-        Gamepads.gamepad2().rightBumper().whenBecomesTrue(DynamicLauncher.INSTANCE.adjustPowerFactor(0.05));
-        Gamepads.gamepad2().leftBumper().whenBecomesTrue(DynamicLauncher.INSTANCE.adjustPowerFactor(-0.05));
+        Gamepads.gamepad2().rightBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(0.05));
+        Gamepads.gamepad2().leftBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(-0.05));
 
         Gamepads.gamepad2().dpadLeft().whenBecomesTrue(Gate.INSTANCE.open);
         Gamepads.gamepad2().dpadRight().whenBecomesTrue(Gate.INSTANCE.close);
@@ -63,7 +63,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));
 
-        Gamepads.gamepad2().dpadDown().whenBecomesTrue(IntakeSubsystem.INSTANCE.start());
+        //Gamepads.gamepad2().dpadDown().whenBecomesTrue(IntakeSubsystem.INSTANCE.start());
     }
 
     @Override

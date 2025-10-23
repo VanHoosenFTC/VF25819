@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.SubsystemGroup;
 import dev.nextftc.ftc.ActiveOpMode;
@@ -14,11 +15,15 @@ public class IntakeSubsystem extends SubsystemGroup {
                 Gate.INSTANCE
         );
     }
-    public Command start() {
-        return new InstantCommand(() -> {
-            ActiveOpMode.telemetry().addData("Hello", "Harshal");
-            ActiveOpMode.telemetry().update();
-        });
-    }
+
+    public Command start =
+            new SequentialGroup(Gate.INSTANCE.open
+                    .thenWait(0.5)
+                    .then(Intake.INSTANCE.start));
+
+    public Command stop =
+            new SequentialGroup(Intake.INSTANCE.stop
+                    .thenWait(0.5)
+                    .then(Gate.INSTANCE.close));
 }
 

@@ -75,8 +75,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
         Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launch);
 
-        Gamepads.gamepad2().a().whenBecomesTrue(Light.INSTANCE.signal(1));
-        Gamepads.gamepad2().x().whenBecomesTrue(Light.INSTANCE.signal(0));
+        Gamepads.gamepad2().a().whenBecomesTrue(Light.INSTANCE.power(1));
+        Gamepads.gamepad2().x().whenBecomesTrue(Light.INSTANCE.power(0));
     }
 
     @Override

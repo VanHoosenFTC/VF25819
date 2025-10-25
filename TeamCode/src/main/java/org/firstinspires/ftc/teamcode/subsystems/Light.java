@@ -19,7 +19,12 @@ public class Light implements Subsystem {
         // nothing to do here
     }
 
-    public Command signal(double brightness) {
+    @Override
+    public void initialize() {
+        servo.setPosition(0);
+    }
+
+    public Command power(double brightness) {
         return new InstantCommand(() -> {
             this.brightness = brightness;
         }).requires(this);

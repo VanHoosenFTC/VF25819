@@ -35,7 +35,6 @@ public class Tilt implements Subsystem {
     public void periodic() {
         ActiveOpMode.telemetry().addData("Right Tilt Position", rightPosition);
         ActiveOpMode.telemetry().addData("Left Tilt Position", leftPosition);
-        ActiveOpMode.telemetry().update();
         rightServo.setPosition(rightPosition);
         leftServo.setPosition(leftPosition);
     }

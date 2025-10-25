@@ -24,6 +24,7 @@ public class Lift implements Subsystem {
 
     @Override
     public void initialize() {
+        ActiveOpMode.telemetry().addData("Initializing Lift: Position - ", position);
         servo.setPosition(position);
     }
 
@@ -39,7 +40,6 @@ public class Lift implements Subsystem {
     @Override
     public void periodic() {
         ActiveOpMode.telemetry().addData("Lift Position", position);
-        ActiveOpMode.telemetry().update();
         servo.setPosition(position);
     }
 

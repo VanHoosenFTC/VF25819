@@ -8,6 +8,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 
@@ -35,8 +37,23 @@ public class Camera implements Subsystem {
         builder.setCamera(BuiltinCameraDirection.BACK);
         builder.addProcessor(aprilTag);
         visionPortal = builder.build();
-
     }
+//    public Command scan = new InstantCommand(() -> {
+//        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+//        for (AprilTagDetection detection : currentDetections) {
+//            if (detection.metadata != null) {
+//                if (detection.metadata.id ==24){
+//                    ActiveOpMode.telemetry().addLine("Tag 24 Found");
+//                    Light.INSTANCE.power(1.0);
+//                } else {
+//                    Light.INSTANCE.power(0);
+//                }
+//            }
+//
+//        }
+//    }).requires(this);
+
+
 
 
     @Override
@@ -52,6 +69,12 @@ public class Camera implements Subsystem {
                 ActiveOpMode.telemetry().addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
                 ActiveOpMode.telemetry().addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
                 ActiveOpMode.telemetry().addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+                if (detection.id ==24) {
+                    ActiveOpMode.telemetry().addLine("Tag 24 Found");
+                    Light.INSTANCE.power(1.0);
+                } else {
+                    Light.INSTANCE.power(0);
+                }
             } else {
                 ActiveOpMode.telemetry().addLine(String.format("\n==== (ID %d) Unknown", detection.id));
                 ActiveOpMode.telemetry().addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));

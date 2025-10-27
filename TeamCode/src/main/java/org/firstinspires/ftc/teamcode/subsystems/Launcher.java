@@ -18,7 +18,7 @@ public class Launcher implements Subsystem {
     // public static final int MAX_VELO = 10145;
 
     private Launcher() { }
-    private static double powerFactor=0.75;
+    private static double powerFactor=0.70;
     private MotorEx motor = new MotorEx("LAUNCHER");
 
     public void initialize() {
@@ -54,6 +54,12 @@ public class Launcher implements Subsystem {
         }).requires(this);
     }
 
+    public Command reverse() {
+        return new InstantCommand(() ->{
+            motor.reverse();
+        }).requires(this);
+    }
+
     @Override
     public void periodic() {
         ActiveOpMode.telemetry().addData("Launcher Power Factor", powerFactor);
@@ -63,6 +69,10 @@ public class Launcher implements Subsystem {
         ActiveOpMode.telemetry().addData("motor power", motor.getPower());
         ActiveOpMode.telemetry().addData("motor velocity", motor.getVelocity());
 
+    }
+
+    public static void setPowerFactor(double percent) {
+        powerFactor = percent;
     }
 }
 

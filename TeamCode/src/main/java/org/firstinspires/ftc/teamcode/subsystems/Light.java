@@ -16,7 +16,6 @@ public class Light implements Subsystem {
     @Override
     public void periodic() {
         servo.setPosition(brightness);
-        // nothing to do here
     }
 
     @Override

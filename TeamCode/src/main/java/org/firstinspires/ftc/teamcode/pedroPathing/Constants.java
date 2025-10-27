@@ -19,16 +19,12 @@ import org.firstinspires.ftc.teamcode.ChassisConstants;
 public class Constants {
 
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(6.44)
-            .forwardZeroPowerAcceleration(-31.0151)
-            .lateralZeroPowerAcceleration(-53.9751)
-            .useSecondaryTranslationalPIDF(false)
-            .useSecondaryHeadingPIDF(false)
-            .useSecondaryDrivePIDF(false)
-            .centripetalScaling(0.0005)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.05, 0, 0.01, 0.02))
-            .headingPIDFCoefficients(new PIDFCoefficients(0.8, 0, 0.02, 0.02))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.007, 0, 0.0002, 0.2, 0.0005));
+            .mass(8.89041)
+            .forwardZeroPowerAcceleration(-49.397)
+            .lateralZeroPowerAcceleration(-59.825)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.2,0, 0.01, 0.02))
+            .headingPIDFCoefficients(new PIDFCoefficients(1.3, 0, 0.05, 0.03))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.008, 0, 0.0000001, 0.6, 0.002));
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .leftFrontMotorName(LEFT_FRONT_MOTOR_NAME)
@@ -39,22 +35,22 @@ public class Constants {
             .leftRearMotorDirection(LEFT_REAR_MOTOR_DIRECTION)
             .rightFrontMotorDirection(RIGHT_FRONT_MOTOR_DIRECTION)
             .rightRearMotorDirection(RIGHT_REAR_MOTOR_DIRECTION)
-            .xVelocity(61.3148)
-            .yVelocity(51.9894);
+            .xVelocity(61.992)
+            .yVelocity(45.712);
 
     public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
-            .forwardPodY(-.5)
-            .strafePodX(.5)
-            .forwardEncoder_HardwareMapName(RIGHT_FRONT_MOTOR_NAME)
-            .strafeEncoder_HardwareMapName(LEFT_FRONT_MOTOR_NAME)
+            .forwardPodY(5.4687)
+            .strafePodX(-6.1875)
+            .forwardEncoder_HardwareMapName(LEFT_FRONT_MOTOR_NAME)
+            .strafeEncoder_HardwareMapName(LEFT_REAR_MOTOR_NAME)
             .strafeEncoderDirection(Encoder.REVERSE)
-            .forwardTicksToInches(0.00294)
-            .strafeTicksToInches(0.00293)
+            .forwardTicksToInches(0.00293)
+            .strafeTicksToInches(0.00291)
             .IMU_HardwareMapName("imu")
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(
                             RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                            RevHubOrientationOnRobot.UsbFacingDirection.LEFT
                     )
             );
 

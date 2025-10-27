@@ -28,7 +28,7 @@ import dev.nextftc.hardware.impl.IMUEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
 public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
-    protected final IMUEx imu = new IMUEx("imu", Direction.RIGHT, Direction.UP).zeroed();
+    protected final IMUEx imu = new IMUEx("imu", Direction.UP, Direction.LEFT).zeroed();
     // change the names and directions to suit your robot
     protected final MotorEx frontLeftMotor = new MotorEx(LEFT_FRONT_MOTOR_NAME).reversed();
     protected final MotorEx frontRightMotor = new MotorEx(RIGHT_FRONT_MOTOR_NAME);
@@ -58,6 +58,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad1().leftTrigger().lessThan(0.5).whenBecomesTrue(IntakeSubsystem.INSTANCE.stop);
 
         Gamepads.gamepad1().start().whenBecomesTrue(new InstantCommand(imu::zero));
+
+        Gamepads.gamepad2().start().whenBecomesTrue(Launcher.INSTANCE.reverse());
 
         Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
         Gamepads.gamepad2().leftStickY().lessThan(0.5).whenBecomesTrue(Launcher.INSTANCE.stop);

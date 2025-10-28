@@ -25,7 +25,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Autonomous(name = "Blue - Back Zone")
 public class BlueBack extends NextFTCOpMode {
     private final Pose startPose = new Pose(60, 7, Math.toRadians(270));
-    private final Pose scorePose = new Pose(60, 15, Math.toRadians(295));
+    private final Pose scorePose = new Pose(60, 15, Math.toRadians(290));
     private final Pose endPose = new Pose(60, 48, Math.toRadians(360));
 
     private Path scorePreload;
@@ -57,7 +57,7 @@ public class BlueBack extends NextFTCOpMode {
     public void onStartButtonPressed() {
         buildPaths();
         PedroComponent.follower().setStartingPose(startPose);
-        Launcher.setPowerFactor(.8);
+        Launcher.setPowerFactor(.82);
         autonomousRoutine().schedule();
     }
 

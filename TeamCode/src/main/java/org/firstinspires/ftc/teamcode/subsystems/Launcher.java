@@ -19,11 +19,10 @@ public class Launcher implements Subsystem {
 
     private Launcher() { }
     private static double powerFactor=0.70;
-    private MotorEx motor = new MotorEx("LAUNCHER");
+    private MotorEx motor = new MotorEx("LAUNCHER").reversed();
 
     public void initialize() {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor.reverse();
     }
 
     private double velo;

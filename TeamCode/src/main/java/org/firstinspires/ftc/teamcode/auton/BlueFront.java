@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auton;
 
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
@@ -28,6 +30,8 @@ public class BlueFront extends NextFTCOpMode {
     private final Pose scorePose = new Pose(56, 84, Math.toRadians(310));
     private final Pose endPose = new Pose(48, 48, Math.toRadians(360));
 
+    private TelemetryManager panelsTelemetry;
+
     private Path scorePreload;
     private PathChain leave;
 
@@ -41,7 +45,7 @@ public class BlueFront extends NextFTCOpMode {
 
     private Command autonomousRoutine() {
         return new SequentialGroup(
-                Lift.INSTANCE.load,
+                Lift.INSTANCE.preLoad,
                 new FollowPath(scorePreload, true, 0.5),
                 LauncherSubsystem.INSTANCE.launch,
                 new ParallelGroup(
@@ -55,8 +59,9 @@ public class BlueFront extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        buildPaths();
         PedroComponent.follower().setStartingPose(startPose);
+        PedroComponent.follower().setPose(startPose);
+        buildPaths();
         Launcher.setPowerFactor(.68);
         autonomousRoutine().schedule();
     }
@@ -68,5 +73,26 @@ public class BlueFront extends NextFTCOpMode {
         leave = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(scorePose, endPose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();;
+    }
+
+    @Override
+    public void onInit() {
+        super.onInit();
+        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+    }
+
+    private void log(String caption, Object... text) {
+        if (text.length == 1) {
+            telemetry.addData(caption, text[0]);
+            panelsTelemetry.debug(caption + ": " + text[0]);
+        } else if (text.length >= 2) {
+            StringBuilder message = new StringBuilder();
+            for (int i = 0; i < text.length; i++) {
+                message.append(text[i]);
+                if (i < text.length - 1) message.append(" ");
+            }
+            telemetry.addData(caption, message.toString());
+            panelsTelemetry.debug(caption + ": " + message);
+        }
     }
 }

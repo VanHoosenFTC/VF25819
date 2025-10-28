@@ -14,9 +14,9 @@ public class Lift implements Subsystem {
 
     private final ServoEx servo = new ServoEx("LIFT");
 
-    private static double loading = 0.54;
+    private double loading = 0.54;
 
-    private static double scoring = 0;
+    private double scoring = 0;
 
     private double position = loading;
 
@@ -42,5 +42,9 @@ public class Lift implements Subsystem {
         ActiveOpMode.telemetry().addData("Lift Position", position);
         servo.setPosition(position);
     }
+
+    public Command preLoad = new InstantCommand(() -> {
+        servo.setPosition(loading - .01);
+    }).requires(this);
 
 }

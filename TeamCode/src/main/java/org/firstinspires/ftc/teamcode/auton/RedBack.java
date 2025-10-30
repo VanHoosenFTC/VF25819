@@ -26,9 +26,9 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Autonomous(name = "Red - Back Zone")
 public class RedBack extends NextFTCOpMode {
-    private final Pose startPose = new Pose(84, 7, Math.toRadians(270));
-    private final Pose scorePose = new Pose(84, 10, Math.toRadians(250));
-    private final Pose endPose = new Pose(84, 48, Math.toRadians(180));
+    private final Pose startPose = new Pose(88, 8, Math.toRadians(270));
+    private final Pose scorePose = new Pose(88, 15, Math.toRadians(250));
+    private final Pose endPose = new Pose(88, 36, Math.toRadians(180));
 
     private TelemetryManager panelsTelemetry;
 
@@ -47,7 +47,7 @@ public class RedBack extends NextFTCOpMode {
         return new SequentialGroup(
                 Lift.INSTANCE.preLoad,
                 new FollowPath(scorePreload, true, 0.5),
-                LauncherSubsystem.INSTANCE.launch,
+                LauncherSubsystem.INSTANCE.launchTwo,
                 new ParallelGroup(
                     IntakeSubsystem.INSTANCE.start,
                     new FollowPath(leave, true, 0.75)

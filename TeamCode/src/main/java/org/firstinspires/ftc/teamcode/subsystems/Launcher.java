@@ -15,6 +15,7 @@ public class Launcher implements Subsystem {
     public static final Launcher INSTANCE = new Launcher();
 
     public static final int MAX_VELO = 1;
+    public static final double EJECT_POWER = -0.3;
     // public static final int MAX_VELO = 10145;
 
     private Launcher() { }
@@ -28,7 +29,7 @@ public class Launcher implements Subsystem {
     private double velo;
 
     public Command start = new InstantCommand(() -> {
-        velo = MAX_VELO*powerFactor;
+        velo = MAX_VELO * powerFactor;
         ActiveOpMode.telemetry().addData("Launcher Power Factor", powerFactor);
         ActiveOpMode.telemetry().addData("Launcher Velocity", velo);
         ActiveOpMode.telemetry().update();
@@ -37,6 +38,13 @@ public class Launcher implements Subsystem {
     public Command stop = new InstantCommand(() -> {
         velo = 0;
         ActiveOpMode.telemetry().addData("Launcher Power Factor", powerFactor);
+        ActiveOpMode.telemetry().addData("Launcher Velocity", velo);
+        ActiveOpMode.telemetry().update();
+    }).requires(this);
+
+    public Command eject = new InstantCommand(() -> {
+        velo = MAX_VELO * EJECT_POWER;
+        ActiveOpMode.telemetry().addData("Launcher Power Factor", EJECT_POWER);
         ActiveOpMode.telemetry().addData("Launcher Velocity", velo);
         ActiveOpMode.telemetry().update();
     }).requires(this);

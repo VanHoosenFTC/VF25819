@@ -59,10 +59,13 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
         Gamepads.gamepad1().start().whenBecomesTrue(new InstantCommand(imu::zero));
 
+        //failsafe - reverse the launcher motor if it is going the wrong direction
         Gamepads.gamepad2().start().whenBecomesTrue(Launcher.INSTANCE.reverse());
 
+        //controls to manually control the launcher
         Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
-        Gamepads.gamepad2().leftStickY().lessThan(0.5).whenBecomesTrue(Launcher.INSTANCE.stop);
+        Gamepads.gamepad2().leftStickY().lessThan(-0.5).whenBecomesTrue(Launcher.INSTANCE.eject);
+        Gamepads.gamepad2().leftStickY().inRange(-0.5, 0.5).whenBecomesTrue(Launcher.INSTANCE.stop);
 
         Gamepads.gamepad2().rightStickButton().whenBecomesTrue(Lift.INSTANCE.score).whenBecomesFalse(Lift.INSTANCE.load);
 
@@ -75,7 +78,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));
 
-        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launch);
+        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchTwo);
+        Gamepads.gamepad2().a().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchOne);
 
         Gamepads.gamepad2().a().whenBecomesTrue(Light.INSTANCE.power(1));
         Gamepads.gamepad2().x().whenBecomesTrue(Light.INSTANCE.power(0));

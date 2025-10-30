@@ -46,11 +46,11 @@ public class RedFront extends NextFTCOpMode {
     private Command autonomousRoutine() {
         return new SequentialGroup(
                 Lift.INSTANCE.preLoad,
-                new FollowPath(scorePreload, true, 0.5),
-                LauncherSubsystem.INSTANCE.launch,
+                new FollowPath(scorePreload, true, 0.75),
+                LauncherSubsystem.INSTANCE.launchTwo,
                 new ParallelGroup(
                     IntakeSubsystem.INSTANCE.start,
-                    new FollowPath(leave, true, 0.75)
+                    new FollowPath(leave, true, 1.00)
                 ),
                 new Delay(0.5),
                 IntakeSubsystem.INSTANCE.stop

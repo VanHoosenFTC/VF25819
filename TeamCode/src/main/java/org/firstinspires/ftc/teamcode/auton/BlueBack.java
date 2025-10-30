@@ -27,9 +27,9 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Autonomous(name = "Blue - Back Zone")
 public class BlueBack extends NextFTCOpMode {
 
-    private final Pose startPose = new Pose(60, 7, Math.toRadians(270));
-    private final Pose scorePose = new Pose(60, 15, Math.toRadians(290));
-    private final Pose endPose = new Pose(60, 48, Math.toRadians(360));
+    private final Pose startPose = new Pose(56, 7, Math.toRadians(270));
+    private final Pose scorePose = new Pose(56, 10, Math.toRadians(290));
+    private final Pose endPose = new Pose(56, 36, Math.toRadians(360));
 
     private TelemetryManager panelsTelemetry;
 
@@ -48,7 +48,7 @@ public class BlueBack extends NextFTCOpMode {
         return new SequentialGroup(
                 Lift.INSTANCE.preLoad,
                 new FollowPath(scorePreload, true, 0.5),
-                LauncherSubsystem.INSTANCE.launch,
+                LauncherSubsystem.INSTANCE.launchTwo,
                 new ParallelGroup(
                     IntakeSubsystem.INSTANCE.start,
                     new FollowPath(leave, true, 0.75)
@@ -58,15 +58,6 @@ public class BlueBack extends NextFTCOpMode {
         );
     }
 
-    @Override
-    public void onStartButtonPressed() {
-        PedroComponent.follower().setStartingPose(startPose);
-        PedroComponent.follower().setPose(startPose);
-        buildPaths();
-        Launcher.setPowerFactor(.82);
-        autonomousRoutine().schedule();
-    }
-
     private void buildPaths() {
         scorePreload = new Path(new BezierLine(startPose, scorePose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
@@ -74,6 +65,15 @@ public class BlueBack extends NextFTCOpMode {
         leave = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(scorePose, endPose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();;
+    }
+
+    @Override
+    public void onStartButtonPressed() {
+        PedroComponent.follower().setStartingPose(startPose);
+        PedroComponent.follower().setPose(startPose);
+        buildPaths();
+        Launcher.setPowerFactor(.82);
+        autonomousRoutine().schedule();
     }
 
     @Override

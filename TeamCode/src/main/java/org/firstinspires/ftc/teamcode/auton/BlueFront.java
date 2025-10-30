@@ -81,6 +81,14 @@ public class BlueFront extends NextFTCOpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     }
 
+    public void onUpdate() {
+        // Log to Panels and driver station (custom log function)
+        log("X", PedroComponent.follower().getPose().getX());
+        log("Y", PedroComponent.follower().getPose().getY());
+        log("Heading", PedroComponent.follower().getPose().getHeading());
+        telemetry.update();
+    }
+
     private void log(String caption, Object... text) {
         if (text.length == 1) {
             telemetry.addData(caption, text[0]);

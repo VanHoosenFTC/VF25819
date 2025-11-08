@@ -54,6 +54,7 @@ public class RedBackReload extends NextFTCOpMode {
     private PathChain doPickUpTwo;
     private PathChain leave;
 
+
     public RedBackReload() {
         addComponents(
                 new PedroComponent(Constants::createFollower),
@@ -117,9 +118,10 @@ public class RedBackReload extends NextFTCOpMode {
         doPickUpTwo = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(pickUpTwoStage, pickUpTwo))
                 .setLinearHeadingInterpolation(pickUpTwoStage.getHeading(), pickUpTwo.getHeading()).build();
-        scorePickUpTwo = PedroCompllower().pathBuilder()
+        PathChain scorePickUpTwo = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(pickUpOne, scorePose))
-                .setLinearHeadingInterpolation(pickUpOne.getHeading(), scorePose.getHeading()).build();    }
+                .setLinearHeadingInterpolation(pickUpOne.getHeading(), scorePose.getHeading()).build();
+    }
 
 
     public void onUpdate() {

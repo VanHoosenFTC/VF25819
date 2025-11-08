@@ -24,18 +24,20 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous(name = "Blue - Front Zone")
-public class BlueFront extends NextFTCOpMode {
-    private final Pose startPose = new Pose(30, 136, Math.toRadians(270));
-    private final Pose scorePose = new Pose(56, 84, Math.toRadians(315));
-    private final Pose endPose = new Pose(48, 48, Math.toRadians(360));
+@Autonomous(name = "Blue - Back Zone")
+public class ReloadNew extends NextFTCOpMode {
+
+    private final Pose startPose = new Pose(34, 132, Math.toRadians(270));
+    private final Pose scorePose1 = new Pose(62, 80, Math.toRadians(290));
+    private final Pose scorePose2 = new Pose(29, 59, Math.toRadians(290));
+    private final Pose endPose = new Pose(62, 80, Math.toRadians(360));
 
     private TelemetryManager panelsTelemetry;
 
     private Path scorePreload;
     private PathChain leave;
 
-    public BlueFront() {
+    public ReloadNew() {
         addComponents(
                 new PedroComponent(Constants::createFollower),
                 new SubsystemComponent(LauncherSubsystem.INSTANCE, IntakeSubsystem.INSTANCE),
@@ -46,15 +48,26 @@ public class BlueFront extends NextFTCOpMode {
     private Command autonomousRoutine() {
         return new SequentialGroup(
                 Lift.INSTANCE.preLoad,
-                new FollowPath(scorePreload, true, 0.75),
+                new FollowPath(scorePreload, true, 0.5),
                 LauncherSubsystem.INSTANCE.launchTwo,
                 new ParallelGroup(
                     IntakeSubsystem.INSTANCE.start,
-                    new FollowPath(leave, true, 1.00)
+                    new FollowPath(leave, true, 0.75)
                 ),
                 new Delay(0.5),
                 IntakeSubsystem.INSTANCE.stop
         );
+    }
+
+    private void buildPaths() {
+        scorePreload = new Path(new BezierLine(startPose, scorePose1));
+        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose1.getHeading());
+        scorePreload = new Path(new BezierLine(startPose, scorePose1));
+        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose1.getHeading());
+
+        leave = PedroComponent.follower().pathBuilder()
+                .addPath(new BezierLine(scorePose2, endPose))
+                .setLinearHeadingInterpolation(scorePose2.getHeading(), endPose.getHeading()).build();;
     }
 
     @Override
@@ -62,31 +75,14 @@ public class BlueFront extends NextFTCOpMode {
         PedroComponent.follower().setStartingPose(startPose);
         PedroComponent.follower().setPose(startPose);
         buildPaths();
-        Launcher.setPowerFactor(.68);
+        Launcher.setPowerFactor(.82);
         autonomousRoutine().schedule();
-    }
-
-    private void buildPaths() {
-        scorePreload = new Path(new BezierLine(startPose, scorePose));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
-
-        leave = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, endPose))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();;
     }
 
     @Override
     public void onInit() {
         super.onInit();
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-    }
-
-    public void onUpdate() {
-        // Log to Panels and driver station (custom log function)
-        log("X", PedroComponent.follower().getPose().getX());
-        log("Y", PedroComponent.follower().getPose().getY());
-        log("Heading", PedroComponent.follower().getPose().getHeading());
-        telemetry.update();
     }
 
     private void log(String caption, Object... text) {
@@ -102,5 +98,13 @@ public class BlueFront extends NextFTCOpMode {
             telemetry.addData(caption, message.toString());
             panelsTelemetry.debug(caption + ": " + message);
         }
+    }
+
+    public Pose getScorePose1() {
+        return scorePose1;
+    }
+
+    public Pose getScorePose2() {
+        return scorePose2;
     }
 }

@@ -49,6 +49,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
+        Launcher.setPowerFactor(0.72);
         Command driverControlled = getDriverControlledCommand();
         driverControlled.schedule();
 

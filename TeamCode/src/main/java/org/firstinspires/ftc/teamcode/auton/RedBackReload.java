@@ -25,16 +25,20 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous(name = "Red - Back Zone Reload", group = "experimental")
 @Configurable
+@Autonomous(name = "Red - Back Zone Reload", group = "experimental")
 public class RedBackReload extends NextFTCOpMode {
     private static final Pose startPose = new Pose(87.5, 9, Math.toRadians(270));
     private static final Pose scorePose = new Pose(85, 13, Math.toRadians(246));
 
-    private static final Pose pickUpOneStage = new Pose(85, 40, Math.toRadians(0));
-    private static final Pose pickUpOne= new Pose(120, 40, Math.toRadians(0));
+    private static final Pose pickUpOneStage = new Pose(85, 44, Math.toRadians(0));
+    private static final Pose pickUpOne= new Pose(115, 44, Math.toRadians(0));
 
     private static final Pose endPose = new Pose(88, 36, Math.toRadians(180));
+
+
+    private static final Pose pickUpTwoStage = new Pose(85, 66, Math.toRadians(0));
+    private static final Pose pickUpTwo= new Pose(115, 66, Math.toRadians(0));
 
     private TelemetryManager panelsTelemetry;
 
@@ -45,6 +49,9 @@ public class RedBackReload extends NextFTCOpMode {
     private PathChain doPickUpOne;
 
     private PathChain scorePickUpOne;
+    private PathChain moveToPickUpTwo;
+
+    private PathChain doPickUpTwo;
     private PathChain leave;
 
     public RedBackReload() {
@@ -65,7 +72,7 @@ public class RedBackReload extends NextFTCOpMode {
                     IntakeSubsystem.INSTANCE.start,
                     new FollowPath(doPickUpOne, true, 0.75)
                 ),
-                new Delay(0.5),
+                new Delay(0.1),
                 IntakeSubsystem.INSTANCE.stop,
                 new FollowPath(scorePickUpOne, true, 0.75),
                 LauncherSubsystem.INSTANCE.launchTwo,
@@ -102,7 +109,17 @@ public class RedBackReload extends NextFTCOpMode {
         scorePickUpOne = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(pickUpOne, scorePose))
                 .setLinearHeadingInterpolation(pickUpOne.getHeading(), scorePose.getHeading()).build();
-    }
+
+        moveToPickUpTwo = PedroComponent.follower().pathBuilder()
+                .addPath(new BezierLine(scorePose, pickUpTwoStage))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), pickUpTwoStage.getHeading()).build();
+
+        doPickUpTwo = PedroComponent.follower().pathBuilder()
+                .addPath(new BezierLine(pickUpTwoStage, pickUpTwo))
+                .setLinearHeadingInterpolation(pickUpTwoStage.getHeading(), pickUpTwo.getHeading()).build();
+        scorePickUpTwo = PedroCompllower().pathBuilder()
+                .addPath(new BezierLine(pickUpOne, scorePose))
+                .setLinearHeadingInterpolation(pickUpOne.getHeading(), scorePose.getHeading()).build();    }
 
 
     public void onUpdate() {

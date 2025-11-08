@@ -46,7 +46,7 @@ public class BlueFront extends NextFTCOpMode {
     private Command autonomousRoutine() {
         return new SequentialGroup(
                 Lift.INSTANCE.preLoad,
-                new FollowPath(scorePreload, true, 0.75),
+                new FollowPath(scorePreload, true, 0.80),
                 LauncherSubsystem.INSTANCE.launchTwo,
                 new ParallelGroup(
                     IntakeSubsystem.INSTANCE.start,

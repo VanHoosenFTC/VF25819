@@ -27,7 +27,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Autonomous(name = "Red - Front Zone")
 public class RedFront extends NextFTCOpMode {
     private final Pose startPose = new Pose(114, 136, Math.toRadians(270));
-    private final Pose scorePose = new Pose(78, 78, Math.toRadians(225));
+    private final Pose scorePose = new Pose(85, 80, Math.toRadians(225));
     private final Pose endPose = new Pose(96, 48, Math.toRadians(180));
 
     private TelemetryManager panelsTelemetry;

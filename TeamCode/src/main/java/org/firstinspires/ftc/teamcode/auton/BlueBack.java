@@ -28,7 +28,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public class BlueBack extends NextFTCOpMode {
 
     private final Pose startPose = new Pose(60, 7, Math.toRadians(270));
-    private final Pose scorePose = new Pose(60, 10, Math.toRadians(290));
+    private final Pose scorePose = new Pose(60, 10, Math.toRadians(302));
     private final Pose endPose = new Pose(60, 48, Math.toRadians(360));
 
     private TelemetryManager panelsTelemetry;
@@ -51,7 +51,7 @@ public class BlueBack extends NextFTCOpMode {
                 LauncherSubsystem.INSTANCE.launchTwo,
                 new ParallelGroup(
                     IntakeSubsystem.INSTANCE.start,
-                    new FollowPath(leave, true, 0.75)
+                    new FollowPath(leave, true, 0.8)
                 ),
                 new Delay(0.5),
                 IntakeSubsystem.INSTANCE.stop
@@ -72,7 +72,7 @@ public class BlueBack extends NextFTCOpMode {
         PedroComponent.follower().setStartingPose(startPose);
         PedroComponent.follower().setPose(startPose);
         buildPaths();
-        Launcher.setPowerFactor(.82);
+        Launcher.setPowerFactor(.875);
         autonomousRoutine().schedule();
     }
 

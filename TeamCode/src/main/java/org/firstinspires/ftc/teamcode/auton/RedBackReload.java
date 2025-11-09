@@ -26,7 +26,7 @@ import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Configurable
-@Autonomous(name = "Red - Back Zone - Reload", group = "experimental")
+@Autonomous(name = "Red - Back Zone Reload", group = "experimental")
 public class RedBackReload extends NextFTCOpMode {
     private static final Pose startPose = new Pose(87.5, 9, Math.toRadians(270));
     private static final Pose scorePose = new Pose(85, 13, Math.toRadians(244));

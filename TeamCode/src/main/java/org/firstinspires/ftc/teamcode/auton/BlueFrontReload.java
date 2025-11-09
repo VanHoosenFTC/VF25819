@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.auton;
 
-import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierLine;
@@ -25,25 +24,16 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Configurable
-@Autonomous(name = "Red - Back Zone - Reload", group = "experimental")
-public class RedBackReload extends NextFTCOpMode {
-    private static final Pose startPose = new Pose(87.5, 9, Math.toRadians(270));
-    private static final Pose scorePose = new Pose(85, 13, Math.toRadians(244));
+@Autonomous(name = "Blue - Front Zone - Reload", group = "experimental")
+public class BlueFrontReload extends NextFTCOpMode {
+    private final Pose startPose = new Pose(30, 136, Math.toRadians(270));
+    private final Pose scorePose = new Pose(56, 84, Math.toRadians(315));
+    private final Pose endPose = new Pose(30, 48, Math.toRadians(180));
 
-    // field tested values from 11/8
-    private static final Pose pickUpOneStage = new Pose(85, 44, Math.toRadians(0));
-    private static final Pose pickUpOne= new Pose(110, 44, Math.toRadians(0));
-
-// logically correct pick up one
-//    private static final Pose pickUpOneStage = new Pose(85, 36, Math.toRadians(0));
-//    private static final Pose pickUpOne= new Pose(110, 36, Math.toRadians(0));
-
-    private static final Pose endPose = new Pose(88, 36, Math.toRadians(180));
-
-
-    private static final Pose pickUpTwoStage = new Pose(85, 69, Math.toRadians(0));
-    private static final Pose pickUpTwo= new Pose(110, 69, Math.toRadians(0));
+    private static final Pose pickUpOneStage = new Pose(42, 74, Math.toRadians(180));
+    private static final Pose pickUpOne= new Pose(15, 74, Math.toRadians(180));
+    private static final Pose pickUpTwoStage = new Pose(42, 55, Math.toRadians(180));
+    private static final Pose pickUpTwo= new Pose(15, 55, Math.toRadians(180));
 
     private TelemetryManager panelsTelemetry;
 
@@ -54,6 +44,7 @@ public class RedBackReload extends NextFTCOpMode {
     private PathChain doPickUpOne;
 
     private PathChain scorePickUpOne;
+
     private PathChain moveToPickUpTwo;
 
     private PathChain doPickUpTwo;
@@ -61,7 +52,7 @@ public class RedBackReload extends NextFTCOpMode {
     private PathChain scorePickUpTwo;
     private PathChain leave;
 
-    public RedBackReload() {
+    public BlueFrontReload() {
         addComponents(
                 new PedroComponent(Constants::createFollower),
                 new SubsystemComponent(LauncherSubsystem.INSTANCE, IntakeSubsystem.INSTANCE),
@@ -116,18 +107,13 @@ public class RedBackReload extends NextFTCOpMode {
         PedroComponent.follower().setStartingPose(startPose);
         PedroComponent.follower().setPose(startPose);
         buildPaths();
-        Launcher.setPowerFactor(.80);
-        Lift.INSTANCE.load.schedule();
+        Launcher.setPowerFactor(.68);
         autonomousRoutine().schedule();
     }
 
     private void buildPaths() {
         scorePreload = new Path(new BezierLine(startPose, scorePose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
-
-        leave = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, endPose))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();
 
         moveToPickUpOne = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(scorePose, pickUpOneStage))
@@ -151,16 +137,13 @@ public class RedBackReload extends NextFTCOpMode {
 
         scorePickUpTwo = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(pickUpTwo, scorePose))
-                .setLinearHeadingInterpolation(pickUpTwo.getHeading(), scorePose.getHeading()).build();    }
+                .setLinearHeadingInterpolation(pickUpTwo.getHeading(), scorePose.getHeading()).build();
 
-
-    public void onUpdate() {
-        // Log to Panels and driver station (custom log function)
-        log("X", PedroComponent.follower().getPose().getX());
-        log("Y", PedroComponent.follower().getPose().getY());
-        log("Heading", PedroComponent.follower().getPose().getHeading());
-        telemetry.update();
+        leave = PedroComponent.follower().pathBuilder()
+                .addPath(new BezierLine(scorePose, endPose))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();;
     }
+
 
     @Override
     public void onInit() {

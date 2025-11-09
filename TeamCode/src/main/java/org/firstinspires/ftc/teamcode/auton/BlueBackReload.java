@@ -26,24 +26,24 @@ import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Configurable
-@Autonomous(name = "Red - Back Zone - Reload", group = "experimental")
-public class RedBackReload extends NextFTCOpMode {
-    private static final Pose startPose = new Pose(87.5, 9, Math.toRadians(270));
-    private static final Pose scorePose = new Pose(85, 13, Math.toRadians(244));
+@Autonomous(name = "Blue - Back Zone - Reload", group = "experimental")
+public class BlueBackReload extends NextFTCOpMode {
+    private static final Pose startPose = new Pose(56.5, 10, Math.toRadians(270));
+    private static final Pose scorePose = new Pose(59, 17, Math.toRadians(302));
 
     // field tested values from 11/8
-    private static final Pose pickUpOneStage = new Pose(85, 44, Math.toRadians(0));
-    private static final Pose pickUpOne= new Pose(110, 44, Math.toRadians(0));
+    private static final Pose pickUpOneStage = new Pose(40, 26, Math.toRadians(180));
+    private static final Pose pickUpOne= new Pose(13, 26, Math.toRadians(180));
 
 // logically correct pick up one
 //    private static final Pose pickUpOneStage = new Pose(85, 36, Math.toRadians(0));
 //    private static final Pose pickUpOne= new Pose(110, 36, Math.toRadians(0));
 
-    private static final Pose endPose = new Pose(88, 36, Math.toRadians(180));
+    private static final Pose endPose = new Pose(48, 50, Math.toRadians(0));
 
 
-    private static final Pose pickUpTwoStage = new Pose(85, 69, Math.toRadians(0));
-    private static final Pose pickUpTwo= new Pose(110, 69, Math.toRadians(0));
+    private static final Pose pickUpTwoStage = new Pose(40, 48, Math.toRadians(180));
+    private static final Pose pickUpTwo= new Pose(13, 48, Math.toRadians(180));
 
     private TelemetryManager panelsTelemetry;
 
@@ -61,7 +61,7 @@ public class RedBackReload extends NextFTCOpMode {
     private PathChain scorePickUpTwo;
     private PathChain leave;
 
-    public RedBackReload() {
+    public BlueBackReload() {
         addComponents(
                 new PedroComponent(Constants::createFollower),
                 new SubsystemComponent(LauncherSubsystem.INSTANCE, IntakeSubsystem.INSTANCE),

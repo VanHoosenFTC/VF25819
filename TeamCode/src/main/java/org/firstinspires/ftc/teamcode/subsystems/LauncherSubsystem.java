@@ -9,7 +9,7 @@ import dev.nextftc.core.subsystems.SubsystemGroup;
 @Configurable
 public class LauncherSubsystem extends SubsystemGroup {
     public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
-    public double launcherWarmUp = 2.0;
+    public double launcherWarmUp = 1.3;
     public double scoringDelay = 0.5;
 
     private LauncherSubsystem() {
@@ -41,6 +41,21 @@ public class LauncherSubsystem extends SubsystemGroup {
                     .thenWait(scoringDelay)
                     .then(Lift.INSTANCE.load)
                     .then(Launcher.INSTANCE.stop);
+
+    public Command launchTwoRunning =
+            new SequentialGroup(Lift.INSTANCE.load)
+                    .thenWait(scoringDelay)
+                    .then(Lift.INSTANCE.score)
+                    .thenWait(scoringDelay)
+                    .then(Lift.INSTANCE.load)
+                    .thenWait(0.5)
+                    .then(Intake.INSTANCE.start)
+                    .thenWait(0.1)
+                    .then(Intake.INSTANCE.stop)
+                    .thenWait(0.5)
+                    .then(Lift.INSTANCE.score)
+                    .thenWait(scoringDelay)
+                    .then(Lift.INSTANCE.load);
 
 }
 

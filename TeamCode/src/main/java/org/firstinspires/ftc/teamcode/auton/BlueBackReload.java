@@ -29,7 +29,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Autonomous(name = "Blue - Back Zone - Reload", group = "experimental")
 public class BlueBackReload extends NextFTCOpMode {
     private static final Pose startPose = new Pose(56.5, 10, Math.toRadians(270));
-    private static final Pose scorePose = new Pose(59, 17, Math.toRadians(302));
+    private static final Pose scorePose = new Pose(59, 17, Math.toRadians(292));
 
     // field tested values from 11/8
     private static final Pose pickUpOneStage = new Pose(40, 26, Math.toRadians(180));
@@ -116,7 +116,7 @@ public class BlueBackReload extends NextFTCOpMode {
         PedroComponent.follower().setStartingPose(startPose);
         PedroComponent.follower().setPose(startPose);
         buildPaths();
-        Launcher.setPowerFactor(.80);
+        Launcher.setPowerFactor(.85);
         Lift.INSTANCE.load.schedule();
         autonomousRoutine().schedule();
     }

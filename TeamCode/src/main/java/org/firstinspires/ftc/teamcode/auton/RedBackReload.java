@@ -116,7 +116,7 @@ public class RedBackReload extends NextFTCOpMode {
         PedroComponent.follower().setStartingPose(startPose);
         PedroComponent.follower().setPose(startPose);
         buildPaths();
-        Launcher.setPowerFactor(.80);
+        Launcher.setPowerFactor(.85);
         Lift.INSTANCE.load.schedule();
         autonomousRoutine().schedule();
     }

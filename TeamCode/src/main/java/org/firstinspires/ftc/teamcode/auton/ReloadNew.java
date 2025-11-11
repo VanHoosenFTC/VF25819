@@ -24,7 +24,7 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous(name = "Blue - Back Zone")
+
 public class ReloadNew extends NextFTCOpMode {
 
     private final Pose startPose = new Pose(34, 132, Math.toRadians(270));

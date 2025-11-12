@@ -18,8 +18,10 @@ public class Launcher implements Subsystem {
     public static final double EJECT_POWER = -0.3;
     // public static final int MAX_VELO = 10145;
 
-    private Launcher() { }
-    private static double powerFactor=0.70;
+    private Launcher() {
+    }
+
+    private static double powerFactor = 0.70;
     private MotorEx motor = new MotorEx("LAUNCHER").reversed();
 
     public void initialize() {
@@ -49,20 +51,8 @@ public class Launcher implements Subsystem {
         ActiveOpMode.telemetry().update();
     }).requires(this);
 
-    public Command adjustPowerFactor(double adjustment) {
-        return new InstantCommand(() -> {
-            if (powerFactor + adjustment > 1) {
-                powerFactor = 1;
-            } else if (powerFactor + adjustment < 0.6) {
-                powerFactor = 0.6;
-            } else {
-                powerFactor = powerFactor + adjustment;
-            }
-        }).requires(this);
-    }
-
     public Command reverse() {
-        return new InstantCommand(() ->{
+        return new InstantCommand(() -> {
             motor.reverse();
         }).requires(this);
     }

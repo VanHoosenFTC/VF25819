@@ -14,9 +14,9 @@ public class Lift implements Subsystem {
 
     private final ServoEx servo = new ServoEx("LIFT");
 
-    private double loading = 0.54;
+    private double loading = 0.52;
 
-    private double scoring = 0;
+    private double scoring = 0.1;
 
     private double position = loading;
 

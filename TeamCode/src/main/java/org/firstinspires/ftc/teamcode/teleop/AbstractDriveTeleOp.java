@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.LEFT_REAR_MOTOR_NA
 import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_FRONT_MOTOR_NAME;
 import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_NAME;
 
+import org.firstinspires.ftc.teamcode.ShootingPosition;
 import org.firstinspires.ftc.teamcode.subsystems.Camera;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
@@ -70,8 +71,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
         Gamepads.gamepad2().rightStickButton().whenBecomesTrue(Lift.INSTANCE.score).whenBecomesFalse(Lift.INSTANCE.load);
 
-        Gamepads.gamepad2().rightBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(0.01));
-        Gamepads.gamepad2().leftBumper().whenBecomesTrue(Launcher.INSTANCE.adjustPowerFactor(-0.01));
+        Gamepads.gamepad2().rightBumper().whenBecomesTrue(LauncherSubsystem.INSTANCE.adjustPowerFactor(0.01));
+        Gamepads.gamepad2().leftBumper().whenBecomesTrue(LauncherSubsystem.INSTANCE.adjustPowerFactor(-0.01));
 
         Gamepads.gamepad2().dpadLeft().whenBecomesTrue(Gate.INSTANCE.open);
         Gamepads.gamepad2().dpadRight().whenBecomesTrue(Gate.INSTANCE.close);
@@ -79,8 +80,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));
 
-        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchTwo);
-        Gamepads.gamepad2().a().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchOne);
+        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchTwo(ShootingPosition.TOP));
+        Gamepads.gamepad2().b().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchTwo(ShootingPosition.BACK));
 
         Gamepads.gamepad2().a().whenBecomesTrue(Light.INSTANCE.power(1));
         Gamepads.gamepad2().x().whenBecomesTrue(Light.INSTANCE.power(0));

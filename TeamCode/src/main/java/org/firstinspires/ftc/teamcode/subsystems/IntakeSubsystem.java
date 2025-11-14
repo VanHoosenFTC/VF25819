@@ -17,9 +17,7 @@ public class IntakeSubsystem extends SubsystemGroup {
     }
 
     public Command start =
-            new SequentialGroup(Gate.INSTANCE.open
-                    .thenWait(0.5)
-                    .then(Intake.INSTANCE.start));
+            new SequentialGroup(Intake.INSTANCE.start);
 
     public Command stop =
             new SequentialGroup(Intake.INSTANCE.stop

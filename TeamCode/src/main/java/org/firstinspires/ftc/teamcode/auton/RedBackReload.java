@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
 import dev.nextftc.core.commands.Command;
@@ -33,7 +34,7 @@ public class RedBackReload extends NextFTCOpMode {
 
     // field tested values from 11/8
     private static final Pose pickUpOneStage = new Pose(85, 44, Math.toRadians(0));
-    private static final Pose pickUpOne= new Pose(110, 44, Math.toRadians(0));
+    private static final Pose pickUpOne= new Pose(112, 44, Math.toRadians(0));
 
 // logically correct pick up one
 //    private static final Pose pickUpOneStage = new Pose(85, 36, Math.toRadians(0));
@@ -43,7 +44,7 @@ public class RedBackReload extends NextFTCOpMode {
 
 
     private static final Pose pickUpTwoStage = new Pose(85, 69, Math.toRadians(0));
-    private static final Pose pickUpTwo= new Pose(110, 69, Math.toRadians(0));
+    private static final Pose pickUpTwo= new Pose(112, 69, Math.toRadians(0));
 
     private TelemetryManager panelsTelemetry;
 

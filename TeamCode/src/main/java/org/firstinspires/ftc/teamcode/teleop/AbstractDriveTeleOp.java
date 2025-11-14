@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.ShootingPosition;
 import org.firstinspires.ftc.teamcode.subsystems.Camera;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Light;
 import org.firstinspires.ftc.teamcode.subsystems.Tilt;
@@ -42,7 +42,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
                         Tilt.INSTANCE,
                         IntakeSubsystem.INSTANCE,
                         Camera.INSTANCE,
-                        Light.INSTANCE),
+                        Light.INSTANCE,
+                        Arm.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -60,6 +61,9 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad1().leftTrigger().lessThan(0.5).whenBecomesTrue(IntakeSubsystem.INSTANCE.stop);
 
         Gamepads.gamepad1().start().whenBecomesTrue(new InstantCommand(imu::zero));
+
+        Gamepads.gamepad1().dpadRight().whenBecomesTrue(Arm.INSTANCE.toHigh);
+        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Arm.INSTANCE.toLow);
 
         //failsafe - reverse the launcher motor if it is going the wrong direction
         Gamepads.gamepad2().start().whenBecomesTrue(Launcher.INSTANCE.reverse());

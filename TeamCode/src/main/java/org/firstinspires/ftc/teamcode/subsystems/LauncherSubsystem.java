@@ -13,7 +13,7 @@ import dev.nextftc.ftc.ActiveOpMode;
 @Configurable
 public class LauncherSubsystem extends SubsystemGroup {
     public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
-    private double launcherWarmUp = 1.3;
+    private double launcherWarmUp = 1.6;
     private double scoringDelay = 0.5;
 
     private double topPowerFactor = 0.73;
@@ -94,7 +94,6 @@ public class LauncherSubsystem extends SubsystemGroup {
             power = powerFactor + adjustment;
         }
         ActiveOpMode.telemetry().addData("calculated powerFactor", power);
-        ActiveOpMode.telemetry().update();
         return power;
     }
 
@@ -103,7 +102,6 @@ public class LauncherSubsystem extends SubsystemGroup {
         super.periodic();
         ActiveOpMode.telemetry().addData("back powerFactor:", backPowerFactor);
         ActiveOpMode.telemetry().addData("top powerFactor:", topPowerFactor);
-        ActiveOpMode.telemetry().update();
     }
 }
 

@@ -13,11 +13,11 @@ import dev.nextftc.ftc.ActiveOpMode;
 @Configurable
 public class LauncherSubsystem extends SubsystemGroup {
     public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
-    private double launcherWarmUp = 1.6;
-    private double scoringDelay = 0.5;
+    private  double launcherWarmUp = 1.8;
+    private  double scoringDelay = 0.5;
 
-    private double topPowerFactor = 0.73;
-    private double backPowerFactor = 0.85;
+    private  double topPowerFactor = 0.73;
+    private  double backPowerFactor = 0.85;
 
     private LauncherSubsystem() {
         super(

@@ -32,9 +32,9 @@ public class BlueFrontReload extends NextFTCOpMode {
     private final Pose endPose = new Pose(30, 48, Math.toRadians(180));
 
     private static final Pose pickUpOneStage = new Pose(42, 74, Math.toRadians(180));
-    private static final Pose pickUpOne= new Pose(15, 74, Math.toRadians(180));
+    private static final Pose pickUpOne= new Pose(13, 74, Math.toRadians(180));
     private static final Pose pickUpTwoStage = new Pose(42, 55, Math.toRadians(180));
-    private static final Pose pickUpTwo= new Pose(15, 55, Math.toRadians(180));
+    private static final Pose pickUpTwo= new Pose(13, 55, Math.toRadians(180));
 
     private TelemetryManager panelsTelemetry;
 

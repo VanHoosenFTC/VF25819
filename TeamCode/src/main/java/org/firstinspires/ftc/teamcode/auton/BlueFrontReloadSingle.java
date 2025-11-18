@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
 import dev.nextftc.core.commands.Command;
@@ -25,16 +24,14 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous(name = "Blue - Front Zone - Reload", group = "experimental")
-public class BlueFrontReload extends NextFTCOpMode {
+@Autonomous(name = "Blue - Front Zone - Reload Single", group = "2")
+public class BlueFrontReloadSingle extends NextFTCOpMode {
     private final Pose startPose = new Pose(30, 136, Math.toRadians(270));
-    private final Pose scorePose = new Pose(56, 84, Math.toRadians(315));
+    private final Pose scorePose = new Pose(51, 84, Math.toRadians(310));
     private final Pose endPose = new Pose(30, 48, Math.toRadians(180));
 
     private static final Pose pickUpOneStage = new Pose(42, 74, Math.toRadians(180));
     private static final Pose pickUpOne= new Pose(13, 74, Math.toRadians(180));
-    private static final Pose pickUpTwoStage = new Pose(42, 55, Math.toRadians(180));
-    private static final Pose pickUpTwo= new Pose(13, 55, Math.toRadians(180));
 
     private TelemetryManager panelsTelemetry;
 
@@ -46,14 +43,9 @@ public class BlueFrontReload extends NextFTCOpMode {
 
     private PathChain scorePickUpOne;
 
-    private PathChain moveToPickUpTwo;
-
-    private PathChain doPickUpTwo;
-
-    private PathChain scorePickUpTwo;
     private PathChain leave;
 
-    public BlueFrontReload() {
+    public BlueFrontReloadSingle() {
         addComponents(
                 new PedroComponent(Constants::createFollower),
                 new SubsystemComponent(LauncherSubsystem.INSTANCE, IntakeSubsystem.INSTANCE),
@@ -84,19 +76,6 @@ public class BlueFrontReload extends NextFTCOpMode {
                 LauncherSubsystem.INSTANCE.launchTwoRunning,
                 new ParallelGroup(
                         Launcher.INSTANCE.stop,
-                        IntakeSubsystem.INSTANCE.start,
-                        new FollowPath(moveToPickUpTwo, false, 1.00)
-                ),
-                new FollowPath(doPickUpTwo, true, 1.00),
-                new Delay(0.2),
-                IntakeSubsystem.INSTANCE.stop,
-                new ParallelGroup(
-                        Launcher.INSTANCE.start,
-                        new FollowPath(scorePickUpTwo, true, 0.7)
-                ),
-                LauncherSubsystem.INSTANCE.launchTwoRunning,
-                new ParallelGroup(
-                        Launcher.INSTANCE.stop,
                         new FollowPath(leave, true, 1.00)
                 )
 
@@ -108,7 +87,7 @@ public class BlueFrontReload extends NextFTCOpMode {
         PedroComponent.follower().setStartingPose(startPose);
         PedroComponent.follower().setPose(startPose);
         buildPaths();
-        Launcher.setPowerFactor(.68);
+        Launcher.setPowerFactor(AutonConstants.TopLauncherPercent);
         autonomousRoutine().schedule();
     }
 
@@ -127,18 +106,6 @@ public class BlueFrontReload extends NextFTCOpMode {
         scorePickUpOne = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(pickUpOne, scorePose))
                 .setLinearHeadingInterpolation(pickUpOne.getHeading(), scorePose.getHeading()).build();
-
-        moveToPickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, pickUpTwoStage))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickUpTwoStage.getHeading()).build();
-
-        doPickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpTwoStage, pickUpTwo))
-                .setLinearHeadingInterpolation(pickUpTwoStage.getHeading(), pickUpTwo.getHeading()).build();
-
-        scorePickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpTwo, scorePose))
-                .setLinearHeadingInterpolation(pickUpTwo.getHeading(), scorePose.getHeading()).build();
 
         leave = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(scorePose, endPose))

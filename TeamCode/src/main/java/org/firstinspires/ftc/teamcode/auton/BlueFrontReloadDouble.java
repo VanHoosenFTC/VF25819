@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
 import dev.nextftc.core.commands.Command;
@@ -25,16 +24,16 @@ import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@Autonomous(name = "Red - Front Zone - Reload", group = "experimental")
-public class RedFrontReload extends NextFTCOpMode {
-    private final Pose startPose = new Pose(114, 136, Math.toRadians(270));
-    private final Pose scorePose = new Pose(85, 80, Math.toRadians(225));
-    private final Pose endPose = new Pose(96, 48, Math.toRadians(180));
+@Autonomous(name = "Blue - Front Zone - Reload Double", group = "1")
+public class BlueFrontReloadDouble extends NextFTCOpMode {
+    private final Pose startPose = new Pose(30, 136, Math.toRadians(270));
+    private final Pose scorePose = new Pose(51, 84, Math.toRadians(310));
+    private final Pose endPose = new Pose(30, 48, Math.toRadians(180));
 
-    private static final Pose pickUpOneStage = new Pose(85, 98, Math.toRadians(0));
-    private static final Pose pickUpOne= new Pose(110, 98, Math.toRadians(0));
-    private static final Pose pickUpTwoStage = new Pose(85, 74, Math.toRadians(0));
-    private static final Pose pickUpTwo= new Pose(110, 74, Math.toRadians(0));
+    private static final Pose pickUpOneStage = new Pose(42, 74, Math.toRadians(180));
+    private static final Pose pickUpOne= new Pose(13, 74, Math.toRadians(180));
+    private static final Pose pickUpTwoStage = new Pose(42, 55, Math.toRadians(180));
+    private static final Pose pickUpTwo= new Pose(13, 55, Math.toRadians(180));
 
     private TelemetryManager panelsTelemetry;
 
@@ -53,7 +52,7 @@ public class RedFrontReload extends NextFTCOpMode {
     private PathChain scorePickUpTwo;
     private PathChain leave;
 
-    public RedFrontReload() {
+    public BlueFrontReloadDouble() {
         addComponents(
                 new PedroComponent(Constants::createFollower),
                 new SubsystemComponent(LauncherSubsystem.INSTANCE, IntakeSubsystem.INSTANCE),
@@ -108,7 +107,7 @@ public class RedFrontReload extends NextFTCOpMode {
         PedroComponent.follower().setStartingPose(startPose);
         PedroComponent.follower().setPose(startPose);
         buildPaths();
-        Launcher.setPowerFactor(.68);
+        Launcher.setPowerFactor(AutonConstants.TopLauncherPercent);
         autonomousRoutine().schedule();
     }
 

@@ -24,7 +24,6 @@ public class IntakeSubsystem extends SubsystemGroup {
 
 
     public Command reverse =
-            new SequentialGroup(Gate.INSTANCE.open);
+            new SequentialGroup(Intake.INSTANCE.reverse);
 
 }
-

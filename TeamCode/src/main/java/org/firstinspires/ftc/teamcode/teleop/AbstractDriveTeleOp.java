@@ -66,7 +66,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Arm.INSTANCE.toLow);
 
         //failsafe - reverse the launcher motor if it is going the wrong direction
-        Gamepads.gamepad2().start().whenBecomesTrue(Launcher.INSTANCE.reverse());
+        //Gamepads.gamepad2().start().whenBecomesTrue(Launcher.INSTANCE.reverse());
 
         //controls to manually control the launcher
         Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.bylazar.configurables.annotations.Configurable;
 
 import org.firstinspires.ftc.teamcode.ShootingPosition;
+import org.firstinspires.ftc.teamcode.auton.AutonConstants;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.SequentialGroup;
@@ -16,8 +17,8 @@ public class LauncherSubsystem extends SubsystemGroup {
     private  double launcherWarmUp = 1.8;
     private  double scoringDelay = 0.5;
 
-    private  double topPowerFactor = 0.73;
-    private  double backPowerFactor = 0.85;
+    private  double topPowerFactor = AutonConstants.TopLauncherPercent;
+    private  double backPowerFactor = AutonConstants.BackLauncherPercent;
 
     private LauncherSubsystem() {
         super(

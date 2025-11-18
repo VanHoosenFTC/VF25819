@@ -22,7 +22,7 @@ public class Intake implements Subsystem {
     
 
     public Command start = new InstantCommand(() -> {
-        velo = -0.9;
+        velo = -0.825;
     }).requires(this);
     public Command stop = new InstantCommand(() -> {
         velo = 0;

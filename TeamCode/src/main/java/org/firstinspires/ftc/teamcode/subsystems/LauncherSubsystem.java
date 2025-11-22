@@ -25,7 +25,8 @@ public class LauncherSubsystem extends SubsystemGroup {
         super(
                 Launcher.INSTANCE,
                 Lift.INSTANCE,
-                Gate.INSTANCE
+                Gate.INSTANCE,
+                TransferOne.INSTANCE
         );
     }
 
@@ -110,13 +111,17 @@ public class LauncherSubsystem extends SubsystemGroup {
     public Command launchContinous =
             new SequentialGroup(new ParallelGroup(
                     Launcher.INSTANCE.start,
-                    Intake.INSTANCE.start)
+                    TransferOne.INSTANCE.start,
+                    Intake.INSTANCE.start,
+                    Gate.INSTANCE.close)
                     .thenWait(2)
                     .then(Gate.INSTANCE.open)
                     .thenWait(4)
                     .then(new ParallelGroup(
                             Launcher.INSTANCE.stop,
-                            Intake.INSTANCE.stop)
+                            Intake.INSTANCE.stop,
+                            TransferOne.INSTANCE.stop,
+                            Gate.INSTANCE.close)
 
                         )
                 );

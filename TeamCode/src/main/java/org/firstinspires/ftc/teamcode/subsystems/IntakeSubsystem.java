@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.SequentialGroup;
-import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.SubsystemGroup;
-import dev.nextftc.ftc.ActiveOpMode;
 
 public class IntakeSubsystem extends SubsystemGroup {
     public static final IntakeSubsystem INSTANCE = new IntakeSubsystem();
@@ -12,7 +10,7 @@ public class IntakeSubsystem extends SubsystemGroup {
     private IntakeSubsystem() {
         super(
                 Intake.INSTANCE,
-                TransferLeft.INSTANCE
+                TransferOne.INSTANCE
         );
     }
 

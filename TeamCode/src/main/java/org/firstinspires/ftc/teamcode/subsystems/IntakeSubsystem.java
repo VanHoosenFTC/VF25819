@@ -12,7 +12,7 @@ public class IntakeSubsystem extends SubsystemGroup {
     private IntakeSubsystem() {
         super(
                 Intake.INSTANCE,
-                Gate.INSTANCE
+                TransferLeft.INSTANCE,TransferRight.INSTANCE
         );
     }
 

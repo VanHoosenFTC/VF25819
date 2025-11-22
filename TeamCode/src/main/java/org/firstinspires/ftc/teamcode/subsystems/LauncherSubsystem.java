@@ -118,7 +118,9 @@ public class LauncherSubsystem extends SubsystemGroup {
                             Launcher.INSTANCE.stop,
                             Intake.INSTANCE.stop)
 
-            );
+                        )
+                );
+
 
     public Command adjustPowerFactor(double adjustment) {
         return new InstantCommand(() -> {

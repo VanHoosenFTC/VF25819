@@ -5,7 +5,10 @@ import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.impl.ServoEx;
 import dev.nextftc.hardware.positionable.SetPosition;
 
-public class TransferRight {public static class TransferRight implements Subsystem {
+public class TransferRight {
+    public static final Subsystem INSTANCE = ;
+
+    public static class TransferRight implements Subsystem {
     public final org.firstinspires.ftc.teamcode.subsystems.TransferRight INSTANCE = new org.firstinspires.ftc.teamcode.subsystems.TransferRight();
     private TransferRight() { }
 

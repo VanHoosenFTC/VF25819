@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Light;
-import org.firstinspires.ftc.teamcode.subsystems.Tilt;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
@@ -39,7 +38,6 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
     public AbstractDriveTeleOp() {
         addComponents(
                 new SubsystemComponent(LauncherSubsystem.INSTANCE,
-                        Tilt.INSTANCE,
                         IntakeSubsystem.INSTANCE,
                         Camera.INSTANCE,
                         Light.INSTANCE,
@@ -81,8 +79,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().dpadLeft().whenBecomesTrue(Gate.INSTANCE.open);
         Gamepads.gamepad2().dpadRight().whenBecomesTrue(Gate.INSTANCE.close);
 
-        Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
-        Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));q:
+        //Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
+        //Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));q:
 
         Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchThree(ShootingPosition.TOP));
         Gamepads.gamepad2().b().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchThree(ShootingPosition.BACK));

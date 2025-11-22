@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.ShootingPosition;
 import org.firstinspires.ftc.teamcode.auton.AutonConstants;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.SubsystemGroup;
@@ -23,7 +24,8 @@ public class LauncherSubsystem extends SubsystemGroup {
     private LauncherSubsystem() {
         super(
                 Launcher.INSTANCE,
-                Lift.INSTANCE
+                Lift.INSTANCE,
+                Gate.INSTANCE
         );
     }
 
@@ -105,6 +107,18 @@ public class LauncherSubsystem extends SubsystemGroup {
                     .then(Lift.INSTANCE.score)
                     .thenWait(scoringDelay)
                     .then(Lift.INSTANCE.load);
+    public Command launchContinous =
+            new SequentialGroup(new ParallelGroup(
+                    Launcher.INSTANCE.start,
+                    Intake.INSTANCE.start)
+                    .thenWait(2)
+                    .then(Gate.INSTANCE.open)
+                    .thenWait(4)
+                    .then(new ParallelGroup(
+                            Launcher.INSTANCE.stop,
+                            Intake.INSTANCE.stop)
+
+            );
 
     public Command adjustPowerFactor(double adjustment) {
         return new InstantCommand(() -> {

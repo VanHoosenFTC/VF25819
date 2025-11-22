@@ -62,6 +62,35 @@ public class LauncherSubsystem extends SubsystemGroup {
         });
     }
 
+    public Command launchThree(ShootingPosition shootingPosition) {
+        return new InstantCommand(() -> {
+            double power = getPower(shootingPosition);
+            Launcher.setPowerFactor(power);
+            new SequentialGroup(Launcher.INSTANCE.start)
+                    .thenWait(launcherWarmUp)
+                    .then(Lift.INSTANCE.score)
+                    .thenWait(scoringDelay)
+                    .then(Lift.INSTANCE.load)
+                    .thenWait(0.5)
+                    .then(Intake.INSTANCE.start)
+                    .thenWait(0.1)
+                    .then(Intake.INSTANCE.stop)
+                    .thenWait(0.5)
+                    .then(Lift.INSTANCE.score)
+                    .thenWait(scoringDelay)
+                    .then(Lift.INSTANCE.load)
+                    .thenWait(0.5)
+                    .then(Intake.INSTANCE.start)
+                    .thenWait(0.1)
+                    .then(Intake.INSTANCE.stop)
+                    .thenWait(0.5)
+                    .then(Lift.INSTANCE.score)
+                    .thenWait(scoringDelay)
+                    .then(Lift.INSTANCE.load)
+                    .then(Launcher.INSTANCE.stop).schedule();
+        });
+    }
+
     public Command launchTwoRunning =
             new SequentialGroup(Lift.INSTANCE.load)
                     .thenWait(scoringDelay)

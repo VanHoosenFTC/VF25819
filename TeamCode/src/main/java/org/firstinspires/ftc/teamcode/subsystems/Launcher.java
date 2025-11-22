@@ -22,7 +22,7 @@ public class Launcher implements Subsystem {
     }
 
     private static double powerFactor = 0.70;
-    private MotorEx motor = new MotorEx("LAUNCHER").reversed();
+    private MotorEx motor = new MotorEx("LAUNCHER");
 
     public void initialize() {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

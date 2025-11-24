@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_FRONT_MOTOR_
 import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_NAME;
 
 import org.firstinspires.ftc.teamcode.ShootingPosition;
+import org.firstinspires.ftc.teamcode.auton.AutonConstants;
 import org.firstinspires.ftc.teamcode.subsystems.Camera;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
@@ -49,14 +50,14 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        Launcher.setPowerFactor(0.72);
+        Launcher.setPowerFactor(AutonConstants.TopLauncherPercent);
         Command driverControlled = getDriverControlledCommand();
         driverControlled.schedule();
 
         Gamepads.gamepad1().rightTrigger().atLeast(0.5).whenBecomesTrue(IntakeSubsystem.INSTANCE.start);
-        Gamepads.gamepad1().rightTrigger().lessThan(0.5).whenBecomesTrue(IntakeSubsystem.INSTANCE.stop);
+        Gamepads.gamepad1().rightTrigger().lessThan(0.5).whenBecomesTrue(IntakeSubsystem.INSTANCE.idle);
         Gamepads.gamepad1().leftTrigger().atLeast(0.5).whenBecomesTrue(IntakeSubsystem.INSTANCE.reverse);
-        Gamepads.gamepad1().leftTrigger().lessThan(0.5).whenBecomesTrue(IntakeSubsystem.INSTANCE.stop);
+        Gamepads.gamepad1().leftTrigger().lessThan(0.5).whenBecomesTrue(IntakeSubsystem.INSTANCE.idle);
 
         Gamepads.gamepad1().start().whenBecomesTrue(new InstantCommand(imu::zero));
 
@@ -71,21 +72,21 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().leftStickY().lessThan(-0.5).whenBecomesTrue(Launcher.INSTANCE.eject);
         Gamepads.gamepad2().leftStickY().inRange(-0.5, 0.5).whenBecomesTrue(Launcher.INSTANCE.stop);
 
-        Gamepads.gamepad2().rightStickButton().whenBecomesTrue(Lift.INSTANCE.score).whenBecomesFalse(Lift.INSTANCE.load);
 
         Gamepads.gamepad2().rightBumper().whenBecomesTrue(LauncherSubsystem.INSTANCE.adjustPowerFactor(0.01));
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(LauncherSubsystem.INSTANCE.adjustPowerFactor(-0.01));
 
-        Gamepads.gamepad2().dpadLeft().whenBecomesTrue(Gate.INSTANCE.open);
-        Gamepads.gamepad2().dpadRight().whenBecomesTrue(Gate.INSTANCE.close);
 
-        //Gamepads.gamepad2().dpadUp().whenBecomesTrue(Tilt.INSTANCE.adjust(0.01));
-        //Gamepads.gamepad2().dpadDown().whenBecomesTrue(Tilt.INSTANCE.adjust(-0.01));q:
+        Gamepads.gamepad2().dpadUp().whenBecomesTrue(LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.TOP));
+        Gamepads.gamepad2().dpadRight().whenBecomesTrue(LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.BACK));
+        Gamepads.gamepad2().dpadDown().whenBecomesTrue(Launcher.INSTANCE.stop);
 
-        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchThree(ShootingPosition.TOP));
-        Gamepads.gamepad2().b().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchThree(ShootingPosition.BACK));
+        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchContinuous(ShootingPosition.TOP));
+        Gamepads.gamepad2().b().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchContinuous(ShootingPosition.BACK));
 
-        Gamepads.gamepad2().a().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchContinous);
+        Gamepads.gamepad2().rightTrigger().atLeast(0.5).whenBecomesTrue(Gate.INSTANCE.open);
+        Gamepads.gamepad2().rightTrigger().lessThan(0.5).whenBecomesTrue(Gate.INSTANCE.close);
+
     }
 
     @Override
@@ -100,6 +101,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         super.onInit();
         ActiveOpMode.telemetry().update();
         Lift.INSTANCE.load.schedule();
+        Gate.INSTANCE.open.schedule();
+        Gate.INSTANCE.close.schedule();
 
     }
 

@@ -11,7 +11,7 @@ public class Gate implements Subsystem {
 
     private final ServoEx servo = new ServoEx("GATE");
 
-    public Command open = new SetPosition(servo, 1).requires(this);
+    public Command open = new SetPosition(servo, 0.15).requires(this);
 
     public Command close = new SetPosition(servo, 0.5).requires(this);
 

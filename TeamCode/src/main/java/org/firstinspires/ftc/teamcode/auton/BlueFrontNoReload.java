@@ -9,12 +9,14 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -45,12 +47,14 @@ public class BlueFrontNoReload extends NextFTCOpMode {
 
     private Command autonomousRoutine() {
         return new SequentialGroup(
-                new ParallelGroup(
-                        Lift.INSTANCE.preLoad,
-                        Launcher.INSTANCE.start
-                ),
-                new FollowPath(scorePreload, true, 0.5),
-                LauncherSubsystem.INSTANCE.launchTwoRunning,
+                Launcher.INSTANCE.start,
+                new FollowPath(scorePreload, true, 0.9),
+                IntakeSubsystem.INSTANCE.start,
+                new Delay(0.2),
+                Gate.INSTANCE.open,
+                new Delay(4),
+                IntakeSubsystem.INSTANCE.stop,
+                Gate.INSTANCE.close,
                 new ParallelGroup(
                         Launcher.INSTANCE.stop,
                         new FollowPath(leave, true, 1.00)
@@ -58,6 +62,7 @@ public class BlueFrontNoReload extends NextFTCOpMode {
 
         );
     }
+
 
     @Override
     public void onStartButtonPressed() {
@@ -81,6 +86,9 @@ public class BlueFrontNoReload extends NextFTCOpMode {
     public void onInit() {
         super.onInit();
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+        Gate.INSTANCE.open.schedule();
+        Gate.INSTANCE.close.schedule();
+        IntakeSubsystem.INSTANCE.idle.schedule();
     }
 
     private void log(String caption, Object... text) {

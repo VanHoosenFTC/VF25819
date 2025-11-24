@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.ShootingPosition;
 import org.firstinspires.ftc.teamcode.auton.AutonConstants;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
@@ -15,8 +16,6 @@ import dev.nextftc.ftc.ActiveOpMode;
 @Configurable
 public class LauncherSubsystem extends SubsystemGroup {
     public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
-    private  double launcherWarmUp = 1.8;
-    private  double scoringDelay = 0.5;
 
     private  double topPowerFactor = AutonConstants.TopLauncherPercent;
     private  double backPowerFactor = AutonConstants.BackLauncherPercent;
@@ -24,9 +23,8 @@ public class LauncherSubsystem extends SubsystemGroup {
     private LauncherSubsystem() {
         super(
                 Launcher.INSTANCE,
-                Lift.INSTANCE,
                 Gate.INSTANCE,
-                TransferOne.INSTANCE
+                IntakeSubsystem.INSTANCE
         );
     }
 
@@ -44,87 +42,48 @@ public class LauncherSubsystem extends SubsystemGroup {
         return power;
     }
 
-    public Command launchTwo(ShootingPosition shootingPosition) {
+    public Command warmUp(ShootingPosition shootingPosition) {
         return new InstantCommand(() -> {
-            double power = getPower(shootingPosition);
-            Launcher.setPowerFactor(power);
-            new SequentialGroup(Launcher.INSTANCE.start)
-                    .thenWait(launcherWarmUp)
-                    .then(Lift.INSTANCE.score)
-                    .thenWait(scoringDelay)
-                    .then(Lift.INSTANCE.load)
-                    .thenWait(0.5)
-                    .then(Intake.INSTANCE.start)
-                    .thenWait(0.1)
-                    .then(Intake.INSTANCE.stop)
-                    .thenWait(0.5)
-                    .then(Lift.INSTANCE.score)
-                    .thenWait(scoringDelay)
-                    .then(Lift.INSTANCE.load)
-                    .then(Launcher.INSTANCE.stop).schedule();
-        });
+            Launcher.setPowerFactor(getPower(shootingPosition));
+            Launcher.INSTANCE.start.schedule();
+        }).requires(this);
     }
 
-    public Command launchThree(ShootingPosition shootingPosition) {
+    public Command launchTwoRunning = new InstantCommand(() -> {
+        //do nothing
+    });
+
+    public Command launchContinuous(ShootingPosition shootingPosition) {
         return new InstantCommand(() -> {
+            ActiveOpMode.telemetry().addData("launchContinuous", "running");
             double power = getPower(shootingPosition);
             Launcher.setPowerFactor(power);
-            new SequentialGroup(Launcher.INSTANCE.start)
-                    .thenWait(launcherWarmUp)
-                    .then(Lift.INSTANCE.score)
-                    .thenWait(scoringDelay)
-                    .then(Lift.INSTANCE.load)
-                    .thenWait(0.5)
-                    .then(Intake.INSTANCE.start)
-                    .thenWait(0.1)
-                    .then(Intake.INSTANCE.stop)
-                    .thenWait(0.5)
-                    .then(Lift.INSTANCE.score)
-                    .thenWait(scoringDelay)
-                    .then(Lift.INSTANCE.load)
-                    .thenWait(0.5)
-                    .then(Intake.INSTANCE.start)
-                    .thenWait(0.1)
-                    .then(Intake.INSTANCE.stop)
-                    .thenWait(0.5)
-                    .then(Lift.INSTANCE.score)
-                    .thenWait(scoringDelay)
-                    .then(Lift.INSTANCE.load)
-                    .then(Launcher.INSTANCE.stop).schedule();
-        });
+            new ParallelGroup(
+                Launcher.INSTANCE.start,
+                IntakeSubsystem.INSTANCE.start,
+                Gate.INSTANCE.close)
+            .thenWait(0.25)
+            .then(Gate.INSTANCE.open)
+            .thenWait(4)
+            .then(new ParallelGroup(
+                Launcher.INSTANCE.stop,
+                IntakeSubsystem.INSTANCE.stop,
+                Gate.INSTANCE.close)
+            ).schedule();
+        }).requires(this);
     }
 
-    public Command launchTwoRunning =
-            new SequentialGroup(Lift.INSTANCE.load)
-                    .thenWait(scoringDelay)
-                    .then(Lift.INSTANCE.score)
-                    .thenWait(scoringDelay)
-                    .then(Lift.INSTANCE.load)
-                    .thenWait(0.5)
-                    .then(Intake.INSTANCE.start)
-                    .thenWait(0.1)
-                    .then(Intake.INSTANCE.stop)
-                    .thenWait(0.5)
-                    .then(Lift.INSTANCE.score)
-                    .thenWait(scoringDelay)
-                    .then(Lift.INSTANCE.load);
-    public Command launchContinous =
-            new SequentialGroup(new ParallelGroup(
-                    Launcher.INSTANCE.start,
-                    TransferOne.INSTANCE.start,
-                    Intake.INSTANCE.start,
-                    Gate.INSTANCE.close)
-                    .thenWait(2)
-                    .then(Gate.INSTANCE.open)
-                    .thenWait(4)
-                    .then(new ParallelGroup(
+    public Command autonLaunch =
+            new SequentialGroup(Gate.INSTANCE.close,
+                    //IntakeSubsystem.INSTANCE.start
+                    new Delay(.25),
+                    Gate.INSTANCE.open,
+                    new Delay(4),
+                    new ParallelGroup(
                             Launcher.INSTANCE.stop,
-                            Intake.INSTANCE.stop,
-                            TransferOne.INSTANCE.stop,
+                            //IntakeSubsystem.INSTANCE.stop,
                             Gate.INSTANCE.close)
-
-                        )
-                );
+                ).requires(this);
 
 
     public Command adjustPowerFactor(double adjustment) {

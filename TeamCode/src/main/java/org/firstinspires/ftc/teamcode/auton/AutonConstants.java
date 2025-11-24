@@ -4,8 +4,8 @@ import com.bylazar.configurables.annotations.Configurable;
 
 @Configurable
 public class AutonConstants {
-    public static double BackLauncherPercent = .78;
-    public static double TopLauncherPercent = .67;
+    public static double BackLauncherPercent = .86;
+    public static double TopLauncherPercent = .75;
 
 
 }

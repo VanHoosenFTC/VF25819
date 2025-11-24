@@ -27,6 +27,10 @@ public class Intake implements Subsystem {
     public Command stop = new InstantCommand(() -> {
         velo = 0;
     }).requires(this);
+
+    public Command idle = new InstantCommand(() -> {
+            velo = -0.15;
+    }).requires(this);
     public Command reverse = new InstantCommand(() -> {
         velo = 0.9;
     }).requires(this);

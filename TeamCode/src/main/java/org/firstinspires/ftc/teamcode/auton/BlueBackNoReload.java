@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
@@ -102,7 +103,7 @@ public class BlueBackNoReload extends NextFTCOpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         Gate.INSTANCE.open.schedule();
         Gate.INSTANCE.close.schedule();
-        IntakeSubsystem.INSTANCE.idle.schedule();
+        Intake.INSTANCE.idle.schedule();
     }
 
     private void log(String caption, Object... text) {

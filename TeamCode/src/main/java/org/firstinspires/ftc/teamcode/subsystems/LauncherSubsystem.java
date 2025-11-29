@@ -17,6 +17,8 @@ import dev.nextftc.ftc.ActiveOpMode;
 public class LauncherSubsystem extends SubsystemGroup {
     public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
 
+    public static double warmUpPercent = 0.80;
+
     private  double topPowerFactor = AutonConstants.TopLauncherPercent;
     private  double backPowerFactor = AutonConstants.BackLauncherPercent;
 
@@ -44,7 +46,9 @@ public class LauncherSubsystem extends SubsystemGroup {
 
     public Command warmUp(ShootingPosition shootingPosition) {
         return new InstantCommand(() -> {
-            Launcher.setPowerFactor(getPower(shootingPosition));
+            //purposefully reduce power factor by some for the first launch
+            double powerFactor = getPower(shootingPosition) * warmUpPercent;
+            Launcher.setPowerFactor(powerFactor);
             Launcher.INSTANCE.start.schedule();
         }).requires(this);
     }
@@ -62,7 +66,7 @@ public class LauncherSubsystem extends SubsystemGroup {
                 Launcher.INSTANCE.start,
                 IntakeSubsystem.INSTANCE.start,
                 Gate.INSTANCE.close)
-            .thenWait(0.25)
+            .thenWait(0.05)
             .then(Gate.INSTANCE.open)
             .thenWait(4)
             .then(new ParallelGroup(

@@ -1,19 +1,20 @@
 package org.firstinspires.ftc.teamcode.auton;
 
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.*;
+
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierLine;
-import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -27,15 +28,6 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Autonomous(name = "Red - Front Zone - Reload Double", group = "1")
 public class RedFrontReloadDouble extends NextFTCOpMode {
-    private final Pose startPose = new Pose(114, 136, Math.toRadians(270));
-    private final Pose scorePose = new Pose(87, 72, Math.toRadians(230));
-    private final Pose endPose = new Pose(96, 48, Math.toRadians(180));
-
-    private static final Pose pickUpOneStage = new Pose(85, 98, Math.toRadians(0));
-    private static final Pose pickUpOne= new Pose(110, 98, Math.toRadians(0));
-    private static final Pose pickUpTwoStage = new Pose(85, 74, Math.toRadians(0));
-    private static final Pose pickUpTwo= new Pose(110, 74, Math.toRadians(0));
-
     private TelemetryManager panelsTelemetry;
 
     private Path scorePreload;
@@ -63,10 +55,11 @@ public class RedFrontReloadDouble extends NextFTCOpMode {
 
     private Command autonomousRoutine() {
         return new SequentialGroup(
-                Launcher.INSTANCE.start,
+                Launcher.INSTANCE.warmup,
                 new FollowPath(scorePreload, true, 0.9),
                 IntakeSubsystem.INSTANCE.start,
-                new Delay(0.2),
+                Launcher.INSTANCE.start,
+                new Delay(0.05),
                 Gate.INSTANCE.open,
                 new Delay(4),
                 IntakeSubsystem.INSTANCE.stop,
@@ -79,11 +72,12 @@ public class RedFrontReloadDouble extends NextFTCOpMode {
                 new FollowPath(doPickUpOne, true, 1.00),
                 IntakeSubsystem.INSTANCE.idle,
                 new ParallelGroup(
-                        Launcher.INSTANCE.start,
+                        Launcher.INSTANCE.warmup,
                         new FollowPath(scorePickUpOne, true, 0.9)
                 ),
                 IntakeSubsystem.INSTANCE.start,
-                new Delay(0.2),
+                Launcher.INSTANCE.start,
+                new Delay(0.05),
                 Gate.INSTANCE.open,
                 new Delay(4),
                 IntakeSubsystem.INSTANCE.stop,
@@ -96,11 +90,12 @@ public class RedFrontReloadDouble extends NextFTCOpMode {
                 new FollowPath(doPickUpTwo, true, 1.00),
                 IntakeSubsystem.INSTANCE.idle,
                 new ParallelGroup(
-                        Launcher.INSTANCE.start,
+                        Launcher.INSTANCE.warmup,
                         new FollowPath(scorePickUpTwo, true, 0.9)
                 ),
                 IntakeSubsystem.INSTANCE.start,
-                new Delay(0.2),
+                Launcher.INSTANCE.start,
+                new Delay(0.05),
                 Gate.INSTANCE.open,
                 new Delay(4),
                 IntakeSubsystem.INSTANCE.stop,
@@ -113,46 +108,48 @@ public class RedFrontReloadDouble extends NextFTCOpMode {
         );
     }
 
+
     @Override
     public void onStartButtonPressed() {
-        PedroComponent.follower().setStartingPose(startPose);
-        PedroComponent.follower().setPose(startPose);
+        PedroComponent.follower().setStartingPose(redFrontStartPose);
+        PedroComponent.follower().setPose(redFrontStartPose);
         buildPaths();
         Launcher.setPowerFactor(AutonConstants.TopLauncherPercent);
         autonomousRoutine().schedule();
     }
 
     private void buildPaths() {
-        scorePreload = new Path(new BezierLine(startPose, scorePose));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        scorePreload = new Path(new BezierLine(redFrontStartPose, redFrontScorePose));
+        scorePreload.setLinearHeadingInterpolation(redFrontStartPose.getHeading(), redFrontScorePose.getHeading());
 
         moveToPickUpOne = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, pickUpOneStage))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickUpOneStage.getHeading()).build();
+                .addPath(new BezierLine(redFrontScorePose, redFrontPickUpOneStage))
+                .setLinearHeadingInterpolation(redFrontScorePose.getHeading(), redFrontPickUpOneStage.getHeading()).build();
 
         doPickUpOne = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpOneStage, pickUpOne))
-                .setLinearHeadingInterpolation(pickUpOneStage.getHeading(), pickUpOne.getHeading()).build();
+                .addPath(new BezierLine(redFrontPickUpOneStage, redFrontPickUpOne))
+                .setLinearHeadingInterpolation(redFrontPickUpOneStage.getHeading(), redFrontPickUpOne.getHeading()).build();
 
         scorePickUpOne = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpOne, scorePose))
-                .setLinearHeadingInterpolation(pickUpOne.getHeading(), scorePose.getHeading()).build();
+                .addPath(new BezierLine(redFrontPickUpOne, redFrontScorePose))
+                .setLinearHeadingInterpolation(redFrontPickUpOne.getHeading(), redFrontScorePose.getHeading()).build();
 
         moveToPickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, pickUpTwoStage))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickUpTwoStage.getHeading()).build();
+                .addPath(new BezierLine(redFrontScorePose, redFrontPickUpTwoStage))
+                .setLinearHeadingInterpolation(redFrontScorePose.getHeading(), redFrontPickUpTwoStage.getHeading()).build();
 
         doPickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpTwoStage, pickUpTwo))
-                .setLinearHeadingInterpolation(pickUpTwoStage.getHeading(), pickUpTwo.getHeading()).build();
+                .addPath(new BezierLine(redFrontPickUpTwoStage, redFrontPickUpTwo))
+                .setLinearHeadingInterpolation(redFrontPickUpTwoStage.getHeading(), redFrontPickUpTwo.getHeading()).build();
 
         scorePickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpTwo, scorePose))
-                .setLinearHeadingInterpolation(pickUpTwo.getHeading(), scorePose.getHeading()).build();
+                .addPath(new BezierLine(redFrontPickUpTwo, redFrontScorePose))
+                .setLinearHeadingInterpolation(redFrontPickUpTwo.getHeading(), redFrontScorePose.getHeading()).build();
 
         leave = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, endPose))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();;
+                .addPath(new BezierLine(redFrontScorePose, redFrontEndPose))
+                .setLinearHeadingInterpolation(redFrontScorePose.getHeading(), redFrontEndPose.getHeading()).build();
+        ;
     }
 
 
@@ -162,7 +159,7 @@ public class RedFrontReloadDouble extends NextFTCOpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         Gate.INSTANCE.open.schedule();
         Gate.INSTANCE.close.schedule();
-        IntakeSubsystem.INSTANCE.idle.schedule();
+        Intake.INSTANCE.idle.schedule();
     }
 
     private void log(String caption, Object... text) {

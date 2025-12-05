@@ -13,7 +13,7 @@ public class Gate implements Subsystem {
 
     public Command open = new SetPosition(servo, 0.15).requires(this);
 
-    public Command close = new SetPosition(servo, 0.5).requires(this);
+    public Command close = new SetPosition(servo, 0.45).requires(this);
 
     public Command ReverseGate = new SetPosition(servo, 0.65).requires(this);
 

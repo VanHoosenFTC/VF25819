@@ -1,6 +1,14 @@
 package org.firstinspires.ftc.teamcode.auton;
 
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.BackLauncherPercent;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueBackEndPose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueBackPickUpOne;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueBackPickUpOneStage;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueBackPickUpTwo;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueBackPickUpTwoStage;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueBackScorePose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueBackStartPose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.bluebackSafePose;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -32,10 +40,6 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Configurable
 @Autonomous(name = "Blue - Back Zone - No Reload", group = "3")
 public class BlueBackNoReload extends NextFTCOpMode {
-    private static final Pose startPose = new Pose(56.5, 10, Math.toRadians(270));
-    private static final Pose scorePose = new Pose(59, 17, Math.toRadians(292));
-
-    private static final Pose endPose = new Pose(48, 50, Math.toRadians(0));
 
 
     private TelemetryManager panelsTelemetry;
@@ -72,8 +76,8 @@ public class BlueBackNoReload extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        PedroComponent.follower().setStartingPose(startPose);
-        PedroComponent.follower().setPose(startPose);
+        PedroComponent.follower().setStartingPose(blueBackStartPose);
+        PedroComponent.follower().setPose(blueBackStartPose);
         buildPaths();
         Launcher.setPowerFactor(BackLauncherPercent);
         Lift.INSTANCE.load.schedule();
@@ -81,12 +85,10 @@ public class BlueBackNoReload extends NextFTCOpMode {
     }
 
     private void buildPaths() {
-        scorePreload = new Path(new BezierLine(startPose, scorePose));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        scorePreload = new Path(new BezierLine(blueBackStartPose, blueBackScorePose));
+        scorePreload.setLinearHeadingInterpolation(blueBackStartPose.getHeading(), blueBackScorePose.getHeading());
 
-        leave = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, endPose))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();
+        leave = PedroComponent.follower().pathBuilder().addPath(new BezierLine(blueBackScorePose, bluebackSafePose)).setLinearHeadingInterpolation(blueBackScorePose.getHeading(), bluebackSafePose.getHeading()).build();
     }
 
     public void onUpdate() {

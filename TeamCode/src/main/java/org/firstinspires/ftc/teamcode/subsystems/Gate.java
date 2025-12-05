@@ -15,6 +15,8 @@ public class Gate implements Subsystem {
 
     public Command close = new SetPosition(servo, 0.5).requires(this);
 
+    public Command ReverseGate = new SetPosition(servo, 0.65).requires(this);
+
     @Override
     public void periodic() {
         // nothing to do here

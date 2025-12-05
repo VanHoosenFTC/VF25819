@@ -1,5 +1,14 @@
 package org.firstinspires.ftc.teamcode.auton;
 
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackEndPose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackPickUpOne;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackPickUpOneStage;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackPickUpTwo;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackPickUpTwoStage;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackSafePose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackScorePose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackStartPose;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -30,15 +39,6 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Configurable
 @Autonomous(name = "Red - Back Zone - No Reload", group = "3")
 public class RedBackNoReload extends NextFTCOpMode {
-    private static final Pose startPose = new Pose(87.5, 9, Math.toRadians(270));
-    private static final Pose scorePose = new Pose(85, 13, Math.toRadians(244));
-
-
-// logically correct pick up one
-//    private static final Pose pickUpOneStage = new Pose(85, 36, Math.toRadians(0));
-//    private static final Pose pickUpOne= new Pose(110, 36, Math.toRadians(0));
-
-    private static final Pose endPose = new Pose(88, 36, Math.toRadians(180));
 
     private TelemetryManager panelsTelemetry;
 
@@ -73,8 +73,8 @@ public class RedBackNoReload extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        PedroComponent.follower().setStartingPose(startPose);
-        PedroComponent.follower().setPose(startPose);
+        PedroComponent.follower().setStartingPose(redBackStartPose);
+        PedroComponent.follower().setPose(redBackStartPose);
         buildPaths();
         Launcher.setPowerFactor(AutonConstants.BackLauncherPercent);
         Lift.INSTANCE.load.schedule();
@@ -82,13 +82,10 @@ public class RedBackNoReload extends NextFTCOpMode {
     }
 
     private void buildPaths() {
-        scorePreload = new Path(new BezierLine(startPose, scorePose));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        scorePreload = new Path(new BezierLine(redBackStartPose, redBackScorePose));
+        scorePreload.setLinearHeadingInterpolation(redBackStartPose.getHeading(), redBackScorePose.getHeading());
 
-        leave = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, endPose))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();
-
+        leave = PedroComponent.follower().pathBuilder().addPath(new BezierLine(redBackScorePose, redBackSafePose)).setLinearHeadingInterpolation(redBackScorePose.getHeading(), redBackSafePose.getHeading()).build();
     }
 
 

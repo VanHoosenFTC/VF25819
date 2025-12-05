@@ -110,7 +110,7 @@ public class RedBackReloadDouble extends NextFTCOpMode {
         PedroComponent.follower().setStartingPose(redBackStartPose);
         PedroComponent.follower().setPose(redBackStartPose);
         buildPaths();
-        Launcher.setPowerFactor(AutonConstants.TopLauncherPercent);
+        Launcher.setPowerFactor(BackLauncherPercent);
         autonomousRoutine().schedule();
     }
 

@@ -17,7 +17,9 @@ import dev.nextftc.ftc.ActiveOpMode;
 public class LauncherSubsystem extends SubsystemGroup {
     public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
 
-    public static double warmUpPercent = 0.80;
+    public static double warmUpPercent = 0.85;
+
+    private ShootingPosition shootingPosition;
 
     private  double topPowerFactor = AutonConstants.TopLauncherPercent;
     private  double backPowerFactor = AutonConstants.BackLauncherPercent;
@@ -29,6 +31,7 @@ public class LauncherSubsystem extends SubsystemGroup {
                 IntakeSubsystem.INSTANCE
         );
     }
+
 
     private double getPower(ShootingPosition shootingPositions) {
         double power = 0.0;
@@ -47,6 +50,7 @@ public class LauncherSubsystem extends SubsystemGroup {
     public Command warmUp(ShootingPosition shootingPosition) {
         return new InstantCommand(() -> {
             //purposefully reduce power factor by some for the first launch
+            this.shootingPosition = shootingPosition;
             double powerFactor = getPower(shootingPosition) * warmUpPercent;
             Launcher.setPowerFactor(powerFactor);
             Launcher.INSTANCE.start.schedule();
@@ -57,23 +61,26 @@ public class LauncherSubsystem extends SubsystemGroup {
         //do nothing
     });
 
-    public Command launchContinuous(ShootingPosition shootingPosition) {
+    public Command launchContinuous() {
         return new InstantCommand(() -> {
+            Launcher.setPowerFactor(getPower(this.shootingPosition));
             ActiveOpMode.telemetry().addData("launchContinuous", "running");
-            double power = getPower(shootingPosition);
-            Launcher.setPowerFactor(power);
             new ParallelGroup(
                 Launcher.INSTANCE.start,
                 IntakeSubsystem.INSTANCE.start,
-                Gate.INSTANCE.close)
-            .thenWait(0.05)
-            .then(Gate.INSTANCE.open)
-            .thenWait(4)
-            .then(new ParallelGroup(
-                Launcher.INSTANCE.stop,
-                IntakeSubsystem.INSTANCE.stop,
-                Gate.INSTANCE.close)
+                Gate.INSTANCE.open
             ).schedule();
+        }).requires(this);
+    }
+
+    public Command stop() {
+        return new InstantCommand(() -> {
+            ActiveOpMode.telemetry().addData("stop", "running");
+            new ParallelGroup(
+                    Launcher.INSTANCE.stop,
+                    IntakeSubsystem.INSTANCE.stop,
+                    Gate.INSTANCE.close
+                    ).schedule();
         }).requires(this);
     }
 

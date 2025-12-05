@@ -1,5 +1,14 @@
 package org.firstinspires.ftc.teamcode.auton;
 
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redFrontEndPose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redFrontPickUpOne;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redFrontPickUpOneStage;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redFrontPickUpTwo;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redFrontPickUpTwoStage;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redFrontSafePose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redFrontScorePose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redFrontStartPose;
+
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierLine;
@@ -28,12 +37,6 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Autonomous(name = "Red - Front Zone - No Reload", group = "3")
 public class RedFrontNoReload extends NextFTCOpMode {
-    private final Pose startPose = new Pose(114, 136, Math.toRadians(270));
-    private final Pose scorePose = new Pose(87, 72, Math.toRadians(230));
-    private final Pose endPose = new Pose(96, 48, Math.toRadians(180));
-
-    private static final Pose pickUpOneStage = new Pose(85, 98, Math.toRadians(0));
-    private static final Pose pickUpOne= new Pose(110, 98, Math.toRadians(0));
 
     private TelemetryManager panelsTelemetry;
 
@@ -76,34 +79,22 @@ public class RedFrontNoReload extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        PedroComponent.follower().setStartingPose(startPose);
-        PedroComponent.follower().setPose(startPose);
+        PedroComponent.follower().setStartingPose(redFrontStartPose);
+        PedroComponent.follower().setPose(redFrontStartPose);
         buildPaths();
         Launcher.setPowerFactor(AutonConstants.TopLauncherPercent);
         autonomousRoutine().schedule();
     }
 
     private void buildPaths() {
-        scorePreload = new Path(new BezierLine(startPose, scorePose));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
-
-        moveToPickUpOne = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, pickUpOneStage))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), pickUpOneStage.getHeading()).build();
-
-        doPickUpOne = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpOneStage, pickUpOne))
-                .setLinearHeadingInterpolation(pickUpOneStage.getHeading(), pickUpOne.getHeading()).build();
-
-        scorePickUpOne = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(pickUpOne, scorePose))
-                .setLinearHeadingInterpolation(pickUpOne.getHeading(), scorePose.getHeading()).build();
+        scorePreload = new Path(new BezierLine(redFrontStartPose, redFrontScorePose));
+        scorePreload.setLinearHeadingInterpolation(redFrontStartPose.getHeading(), redFrontScorePose.getHeading());
 
         leave = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(scorePose, endPose))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), endPose.getHeading()).build();;
+                .addPath(new BezierLine(redFrontScorePose, redFrontSafePose))
+                .setLinearHeadingInterpolation(redFrontScorePose.getHeading(), redFrontSafePose.getHeading()).build();
+        ;
     }
-
 
     @Override
     public void onInit() {

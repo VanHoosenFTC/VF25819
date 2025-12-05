@@ -8,11 +8,11 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_N
 import org.firstinspires.ftc.teamcode.ShootingPosition;
 import org.firstinspires.ftc.teamcode.auton.AutonConstants;
 import org.firstinspires.ftc.teamcode.subsystems.Camera;
+import org.firstinspires.ftc.teamcode.subsystems.KickStand;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Light;
 
@@ -42,7 +42,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
                         IntakeSubsystem.INSTANCE,
                         Camera.INSTANCE,
                         Light.INSTANCE,
-                        Arm.INSTANCE),
+                        KickStand.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -61,8 +61,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
         Gamepads.gamepad1().start().whenBecomesTrue(new InstantCommand(imu::zero));
 
-        Gamepads.gamepad1().dpadRight().whenBecomesTrue(Arm.INSTANCE.toHigh);
-        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(Arm.INSTANCE.toLow);
+        Gamepads.gamepad1().dpadUp().whenBecomesTrue(KickStand.INSTANCE.travel);
+        Gamepads.gamepad1().dpadDown().whenBecomesTrue(KickStand.INSTANCE.park);
 
         //failsafe - reverse the launcher motor if it is going the wrong direction
         //Gamepads.gamepad2().start().whenBecomesTrue(Launcher.INSTANCE.reverse());
@@ -77,17 +77,18 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(LauncherSubsystem.INSTANCE.adjustPowerFactor(-0.01));
 
 
-        Gamepads.gamepad2().dpadUp().whenBecomesTrue(LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.TOP));
-        Gamepads.gamepad2().dpadRight().whenBecomesTrue(LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.BACK));
+        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.TOP));
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(Launcher.INSTANCE.stop);
 
-        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchContinuous(ShootingPosition.TOP));
-        Gamepads.gamepad2().b().whenBecomesTrue(LauncherSubsystem.INSTANCE.launchContinuous(ShootingPosition.BACK));
+        Gamepads.gamepad2().b().whenBecomesTrue(LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.BACK));
 
-        Gamepads.gamepad2().rightTrigger().atLeast(0.5).whenBecomesTrue(Gate.INSTANCE.open);
-        Gamepads.gamepad2().rightTrigger().lessThan(0.5).whenBecomesTrue(Gate.INSTANCE.close);
+        Gamepads.gamepad2().rightTrigger().atLeast(0.5).whenBecomesTrue(LauncherSubsystem.INSTANCE.launchContinuous());
+        Gamepads.gamepad2().rightTrigger().lessThan(0.5).whenBecomesTrue(LauncherSubsystem.INSTANCE.stop());
 
+        Gamepads.gamepad2().leftTrigger().atLeast(0.5).whenBecomesTrue(Gate.INSTANCE.ReverseGate);
+        Gamepads.gamepad2().leftTrigger().lessThan(0.5).whenBecomesTrue(Gate.INSTANCE.close);
     }
+
 
     @Override
     public void onUpdate() {

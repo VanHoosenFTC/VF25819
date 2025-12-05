@@ -11,8 +11,8 @@ public class TransferTwo implements Subsystem {
 
     private CRServoEx servo = new CRServoEx("TRANSFER2");
 
-    public Command start = new SetPower(servo, -1).requires(this);
-    public Command idle = new SetPower(servo, -0.1).requires(this);
+    public Command start = new SetPower(servo, 1).requires(this);
+    public Command idle = new SetPower(servo, 0.1).requires(this);
     public Command stop = new SetPower(servo, 0).requires(this);
-    public Command reverse = new SetPower(servo, 1).requires(this);
+    public Command reverse = new SetPower(servo, -1).requires(this);
 }

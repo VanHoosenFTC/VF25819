@@ -65,7 +65,7 @@ public class RedFrontReloadDouble extends NextFTCOpMode {
                 IntakeSubsystem.INSTANCE.stop,
                 Gate.INSTANCE.close,
                 new ParallelGroup(
-                        Launcher.INSTANCE.stop,
+                        Launcher.INSTANCE.warmup,
                         IntakeSubsystem.INSTANCE.start,
                         new FollowPath(moveToPickUpOne, false, 1.00)
                 ),
@@ -83,7 +83,7 @@ public class RedFrontReloadDouble extends NextFTCOpMode {
                 IntakeSubsystem.INSTANCE.stop,
                 Gate.INSTANCE.close,
                 new ParallelGroup(
-                        Launcher.INSTANCE.stop,
+                        Launcher.INSTANCE.warmup,
                         IntakeSubsystem.INSTANCE.start,
                         new FollowPath(moveToPickUpTwo, false, 1.00)
                 ),

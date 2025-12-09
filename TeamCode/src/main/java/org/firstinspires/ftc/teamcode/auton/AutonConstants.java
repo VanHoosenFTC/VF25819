@@ -20,10 +20,10 @@ public class AutonConstants {
     public static Pose redFrontEndPose = new Pose(96, 48, Math.toRadians(180));
     public static Pose redFrontSafePose = new Pose(127, 108, Math.toRadians(180));
 
-    public static Pose redFrontPickUpOneStage = new Pose(85, 96, Math.toRadians(0));
-    public static Pose redFrontPickUpOne = new Pose(110, 96, Math.toRadians(0));
-    public static Pose redFrontPickUpTwoStage = new Pose(85, 72, Math.toRadians(0));
-    public static Pose redFrontPickUpTwo = new Pose(110, 72, Math.toRadians(0));
+    public static Pose redFrontPickUpOneStage = new Pose(85, 98, Math.toRadians(0));
+    public static Pose redFrontPickUpOne = new Pose(115, 98, Math.toRadians(0));
+    public static Pose redFrontPickUpTwoStage = new Pose(85, 74, Math.toRadians(0));
+    public static Pose redFrontPickUpTwo = new Pose(115, 74, Math.toRadians(0));
     public static Pose redBackStartPose = new Pose(87.5, 9, Math.toRadians(270));
     public static Pose redBackScorePose = new Pose(85, 13, Math.toRadians(248));
     public static Pose redBackEndPose = new Pose(88, 36, Math.toRadians(180));

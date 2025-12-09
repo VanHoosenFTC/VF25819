@@ -7,7 +7,9 @@ import static org.firstinspires.ftc.teamcode.ChassisConstants.RIGHT_REAR_MOTOR_N
 
 import org.firstinspires.ftc.teamcode.ShootingPosition;
 import org.firstinspires.ftc.teamcode.auton.AutonConstants;
-import org.firstinspires.ftc.teamcode.subsystems.Camera;
+import org.firstinspires.ftc.teamcode.sensors.HuskyLensSensor;
+import org.firstinspires.ftc.teamcode.sensors.KickstandColorSensor;
+import org.firstinspires.ftc.teamcode.sensors.ArtifactColorSensor;
 import org.firstinspires.ftc.teamcode.subsystems.KickStand;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
@@ -36,11 +38,14 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
     protected final MotorEx backLeftMotor = new MotorEx(LEFT_REAR_MOTOR_NAME).reversed();
     protected final MotorEx backRightMotor = new MotorEx(RIGHT_REAR_MOTOR_NAME);
 
+    protected KickstandColorSensor kickstandColorSensor = new KickstandColorSensor();
+    protected ArtifactColorSensor artifactColorSensor = new ArtifactColorSensor();
+    protected HuskyLensSensor huskyLensSensor = new HuskyLensSensor();
+
     public AbstractDriveTeleOp() {
         addComponents(
                 new SubsystemComponent(LauncherSubsystem.INSTANCE,
                         IntakeSubsystem.INSTANCE,
-                        Camera.INSTANCE,
                         Light.INSTANCE,
                         KickStand.INSTANCE),
                 BulkReadComponent.INSTANCE,
@@ -93,6 +98,25 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
     @Override
     public void onUpdate() {
         super.onUpdate();
+
+        // Detect end game lines for kickstand
+        KickstandColorSensor.DetectedColor kickstandColor = kickstandColorSensor.getDetectedColor();
+        ActiveOpMode.telemetry().addData("Kickstand detected color", kickstandColor);
+        if (kickstandColor == KickstandColorSensor.DetectedColor.RED) {
+            Light.INSTANCE.setColor(Light.RED).schedule();
+        } else if (kickstandColor == KickstandColorSensor.DetectedColor.BLUE) {
+            Light.INSTANCE.setColor(Light.BLUE).schedule();
+        } else {
+            Light.INSTANCE.setColor(Light.OFF).schedule();
+        }
+
+        // detect artifact in launch ramp
+        boolean artifactFound = artifactColorSensor.artifactFound();
+        ActiveOpMode.telemetry().addData("Artifact detected", artifactFound);
+        // detect april tags
+        boolean aprilTagFound = huskyLensSensor.tagFound();
+        ActiveOpMode.telemetry().addData("April Tag Found", aprilTagFound);
+
         ActiveOpMode.telemetry().update();
 
     }
@@ -104,6 +128,11 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Lift.INSTANCE.load.schedule();
         Gate.INSTANCE.open.schedule();
         Gate.INSTANCE.close.schedule();
+        KickStand.INSTANCE.travel.schedule();
+        Light.INSTANCE.setColor(Light.GREEN).schedule();
+        kickstandColorSensor.init(hardwareMap);
+        artifactColorSensor.init(hardwareMap);
+        huskyLensSensor.init(hardwareMap);
 
     }
 

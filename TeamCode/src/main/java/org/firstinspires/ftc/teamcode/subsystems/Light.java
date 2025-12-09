@@ -7,15 +7,20 @@ import dev.nextftc.hardware.impl.ServoEx;
 
 public class Light implements Subsystem {
     public static final Light INSTANCE = new Light();
+    public static final double GREEN = 0.5;
+    public static final double RED = 0.28;
 
-    private double brightness = 0.0;
+    public static final double BLUE = 0.62;
+    public static final double OFF = 0;
+
+    private double color = 0.0;
 
     private final ServoEx servo = new ServoEx("LIGHT");
     private Light() { }
 
     @Override
     public void periodic() {
-        servo.setPosition(brightness);
+        servo.setPosition(color);
     }
 
     @Override
@@ -23,9 +28,9 @@ public class Light implements Subsystem {
         servo.setPosition(0);
     }
 
-    public Command power(double brightness) {
+    public Command setColor(double color) {
         return new InstantCommand(() -> {
-            this.brightness = brightness;
+            this.color = color;
         }).requires(this);
     }
 }

@@ -17,7 +17,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 public class KickStand implements Subsystem {
     public static final KickStand INSTANCE = new KickStand();
     public static int PARKED_POSITION = -1300;
-    public static int TRAVEL_POSITION = 0;
+    public static int TRAVEL_POSITION = 50;
 
     private KickStand() { }
 

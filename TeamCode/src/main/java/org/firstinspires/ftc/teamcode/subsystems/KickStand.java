@@ -16,7 +16,7 @@ import dev.nextftc.hardware.impl.MotorEx;
 @Configurable
 public class KickStand implements Subsystem {
     public static final KickStand INSTANCE = new KickStand();
-    public static int PARKED_POSITION = -1400;
+    public static int PARKED_POSITION = -1300;
     public static int TRAVEL_POSITION = 0;
 
     private KickStand() { }
@@ -45,7 +45,7 @@ public class KickStand implements Subsystem {
     @Override
     public void initialize() {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motor.setCurrentPosition(0);
+        //motor.setCurrentPosition(0);
     }
 }
 

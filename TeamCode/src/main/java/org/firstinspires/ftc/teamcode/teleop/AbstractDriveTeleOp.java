@@ -113,10 +113,17 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         // detect artifact in launch ramp
         boolean artifactFound = artifactColorSensor.artifactFound();
         ActiveOpMode.telemetry().addData("Artifact detected", artifactFound);
+        if (artifactFound == true){
+            LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.TOP).schedule();
+        } else {
+            LauncherSubsystem.INSTANCE.stop().schedule();
+        }
         // detect april tags
         boolean aprilTagFound = huskyLensSensor.tagFound();
         ActiveOpMode.telemetry().addData("April Tag Found", aprilTagFound);
-
+        if (aprilTagFound == true) {
+            Light.INSTANCE.setColor(Light.GREEN).schedule();
+        }
         ActiveOpMode.telemetry().update();
 
     }

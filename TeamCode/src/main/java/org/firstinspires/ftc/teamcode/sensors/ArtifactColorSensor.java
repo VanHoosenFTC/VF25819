@@ -16,7 +16,9 @@ public class ArtifactColorSensor {
 
     public static double artifactDistance = 2.9;
 
-    public static NormalizedColor greenArtifactColors = new NormalizedColor(0.01f, 0.10f, 0.04f);
+    public static NormalizedColor greenArtifactColors = new NormalizedColor(0.04f, 0.09f, 0.10f);
+    public static NormalizedColor robotgreenColors = new NormalizedColor(0.06f, 0.12f, 0.09f);
+
     public static NormalizedColor purpleArtifactColors = new NormalizedColor(0.05f, 0.05f, 0.05f);
     public static NormalizedColor yellowArtifactColors = new NormalizedColor(0.01f, 0.07f, 0.03f);
 
@@ -40,8 +42,10 @@ public class ArtifactColorSensor {
         boolean greenFound = false;
         boolean yellowFound = false;
         if (normRed > greenArtifactColors.redValue && normGreen > greenArtifactColors.greenValue && normBlue > greenArtifactColors.blueValue) {
-            greenFound = true;
-            ActiveOpMode.telemetry().addData("artifact found", "green");
+            if (normRed < robotgreenColors.redValue && normGreen < robotgreenColors.greenValue && normBlue < robotgreenColors.blueValue) {
+                greenFound = true;
+                ActiveOpMode.telemetry().addData("artifact found", "green");
+            }
         } else if (normRed > purpleArtifactColors.redValue && normGreen > purpleArtifactColors.greenValue && normBlue > purpleArtifactColors.blueValue) {
             purpleFound = true;
             ActiveOpMode.telemetry().addData("artifact found", "purple");

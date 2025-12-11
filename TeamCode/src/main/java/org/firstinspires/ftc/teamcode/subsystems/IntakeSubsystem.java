@@ -23,8 +23,8 @@ public class IntakeSubsystem extends SubsystemGroup {
 
     public Command idle =
             new ParallelGroup(Intake.INSTANCE.idle,
-                    TransferOne.INSTANCE.idle,
-                    TransferTwo.INSTANCE.idle);
+                    TransferOne.INSTANCE.stop,
+                    TransferTwo.INSTANCE.stop);
 
     public Command stop =
             new ParallelGroup(Intake.INSTANCE.stop,

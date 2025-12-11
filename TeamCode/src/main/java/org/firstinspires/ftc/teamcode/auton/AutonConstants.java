@@ -5,8 +5,8 @@ import com.pedropathing.geometry.Pose;
 
 @Configurable
 public class AutonConstants {
-    public static double BackLauncherPercent = .75;
-    public static double TopLauncherPercent = .65;
+    public static double BackLauncherPercent = .71;
+    public static double TopLauncherPercent = .51;
 
     public static Pose blueFrontScorePose = new Pose(54, 84, Math.toRadians(310));
     public static Pose blueFrontStartPose = new Pose(30, 136, Math.toRadians(270));

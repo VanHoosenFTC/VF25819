@@ -90,7 +90,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().rightTrigger().atLeast(0.5).whenBecomesTrue(LauncherSubsystem.INSTANCE.launchContinuous());
         Gamepads.gamepad2().rightTrigger().lessThan(0.5).whenBecomesTrue(LauncherSubsystem.INSTANCE.stop());
 
-        Gamepads.gamepad2().leftTrigger().atLeast(0.5).whenBecomesTrue(Gate.INSTANCE.ReverseGate);
+        Gamepads.gamepad2().leftTrigger().atLeast(0.5).whenBecomesTrue(Gate.INSTANCE.reverse);
         Gamepads.gamepad2().leftTrigger().lessThan(0.5).whenBecomesTrue(Gate.INSTANCE.close);
     }
 
@@ -113,15 +113,13 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         // detect artifact in launch ramp
         boolean artifactFound = artifactColorSensor.artifactFound();
         ActiveOpMode.telemetry().addData("Artifact detected", artifactFound);
-        if (artifactFound == true){
+        if (artifactFound){
             LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.TOP).schedule();
-        } else {
-            LauncherSubsystem.INSTANCE.stop().schedule();
         }
         // detect april tags
         boolean aprilTagFound = huskyLensSensor.tagFound();
         ActiveOpMode.telemetry().addData("April Tag Found", aprilTagFound);
-        if (aprilTagFound == true) {
+        if (aprilTagFound) {
             Light.INSTANCE.setColor(Light.GREEN).schedule();
         }
         ActiveOpMode.telemetry().update();

@@ -16,8 +16,8 @@ import dev.nextftc.hardware.impl.MotorEx;
 @Configurable
 public class KickStand implements Subsystem {
     public static final KickStand INSTANCE = new KickStand();
-    public static int PARKED_POSITION = -1300;
-    public static int TRAVEL_POSITION = 50;
+    public static int PARKED_POSITION = -1100;
+    public static int TRAVEL_POSITION = -100;
 
     private KickStand() { }
 

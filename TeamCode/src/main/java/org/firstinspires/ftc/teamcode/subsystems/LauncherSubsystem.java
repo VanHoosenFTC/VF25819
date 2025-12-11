@@ -17,12 +17,15 @@ import dev.nextftc.ftc.ActiveOpMode;
 public class LauncherSubsystem extends SubsystemGroup {
     public static final LauncherSubsystem INSTANCE = new LauncherSubsystem();
 
-    public static double warmUpPercent = 0.85;
+    public static double warmUpPercent = 1;
 
     private ShootingPosition shootingPosition;
 
     private  double topPowerFactor = AutonConstants.TopLauncherPercent;
     private  double backPowerFactor = AutonConstants.BackLauncherPercent;
+
+    public static double minPower = 0.5;
+    public static double maxPower = 1.0;
 
     private LauncherSubsystem() {
         super(
@@ -78,7 +81,7 @@ public class LauncherSubsystem extends SubsystemGroup {
             ActiveOpMode.telemetry().addData("stop", "running");
             new ParallelGroup(
                     Launcher.INSTANCE.stop,
-                    IntakeSubsystem.INSTANCE.stop,
+                    IntakeSubsystem.INSTANCE.idle,
                     Gate.INSTANCE.close
                     ).schedule();
         }).requires(this);
@@ -107,10 +110,10 @@ public class LauncherSubsystem extends SubsystemGroup {
 
     private double adjust(double powerFactor, double adjustment) {
         double power = powerFactor;
-        if (power + adjustment > 1) {
-            power = 1;
-        } else if (power + adjustment < 0.6) {
-            power = 0.6;
+        if (power + adjustment > maxPower) {
+            power = maxPower;
+        } else if (power + adjustment < minPower) {
+            power = minPower;
         } else {
             power = powerFactor + adjustment;
         }

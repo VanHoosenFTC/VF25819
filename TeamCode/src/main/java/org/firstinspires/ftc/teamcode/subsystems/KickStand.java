@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.core.commands.Command;
@@ -18,6 +20,9 @@ public class KickStand implements Subsystem {
     public static final KickStand INSTANCE = new KickStand();
     public static int PARKED_POSITION = -1100;
     public static int TRAVEL_POSITION = -100;
+    public static int KICKSTAND_VELOCITY = 500;
+    public static int adjustment = 25;
+    private int position = TRAVEL_POSITION;
 
     private KickStand() { }
 
@@ -26,24 +31,33 @@ public class KickStand implements Subsystem {
             .elevatorFF(0)
             .build();
 
-    private MotorEx motor = new MotorEx("KICKSTAND");
+    private DcMotorEx motor;
 
     public Command travel = new InstantCommand(() -> {
-        ActiveOpMode.telemetry().addData("Kickstand position", motor.getCurrentPosition());
-        new RunToPosition(controlSystem, TRAVEL_POSITION).schedule();
+        position = TRAVEL_POSITION;
     }).requires(this);
     public Command park = new InstantCommand(() -> {
-        ActiveOpMode.telemetry().addData("Kickstand position", motor.getCurrentPosition());
-        new RunToPosition(controlSystem, PARKED_POSITION).schedule();
+        position = PARKED_POSITION;
+    }).requires(this);
+
+    public Command raise = new InstantCommand(() -> {
+        position = position + adjustment;
+    }).requires(this);
+
+    public Command lower = new InstantCommand(() -> {
+        position = position - adjustment;
     }).requires(this);
 
     @Override
     public void periodic() {
-        motor.setPower(controlSystem.calculate(motor.getState()));
+        motor.setTargetPosition(position);
+        motor.setVelocity(KICKSTAND_VELOCITY);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     @Override
     public void initialize() {
+        motor = ActiveOpMode.hardwareMap().get(DcMotorEx.class, "KICKSTAND");
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //motor.setCurrentPosition(0);
     }

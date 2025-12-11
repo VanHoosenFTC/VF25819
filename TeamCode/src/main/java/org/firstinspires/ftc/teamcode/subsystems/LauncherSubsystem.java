@@ -6,9 +6,7 @@ import org.firstinspires.ftc.teamcode.ShootingPosition;
 import org.firstinspires.ftc.teamcode.auton.AutonConstants;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
-import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.SubsystemGroup;
 import dev.nextftc.ftc.ActiveOpMode;
@@ -19,7 +17,7 @@ public class LauncherSubsystem extends SubsystemGroup {
 
     public static double warmUpPercent = 1;
 
-    private ShootingPosition shootingPosition;
+    private ShootingPosition shootingPosition = ShootingPosition.TOP;
 
     private  double topPowerFactor = AutonConstants.TopLauncherPercent;
     private  double backPowerFactor = AutonConstants.BackLauncherPercent;
@@ -50,24 +48,15 @@ public class LauncherSubsystem extends SubsystemGroup {
         return power;
     }
 
-    public Command warmUp(ShootingPosition shootingPosition) {
-        return new InstantCommand(() -> {
-            //purposefully reduce power factor by some for the first launch
-            this.shootingPosition = shootingPosition;
+    public Command warmup = new InstantCommand(() -> {
             double powerFactor = getPower(shootingPosition) * warmUpPercent;
             Launcher.setPowerFactor(powerFactor);
             Launcher.INSTANCE.start.schedule();
         }).requires(this);
-    }
-
-    public Command launchTwoRunning = new InstantCommand(() -> {
-        //do nothing
-    });
 
     public Command launchContinuous() {
         return new InstantCommand(() -> {
             Launcher.setPowerFactor(getPower(this.shootingPosition));
-            ActiveOpMode.telemetry().addData("launchContinuous", "running");
             new ParallelGroup(
                 Launcher.INSTANCE.start,
                 IntakeSubsystem.INSTANCE.start,
@@ -76,30 +65,41 @@ public class LauncherSubsystem extends SubsystemGroup {
         }).requires(this);
     }
 
-    public Command stop() {
+    public Command stopLauncherAndIntakeAndCloseGate() {
         return new InstantCommand(() -> {
-            ActiveOpMode.telemetry().addData("stop", "running");
             new ParallelGroup(
                     Launcher.INSTANCE.stop,
-                    IntakeSubsystem.INSTANCE.idle,
+                    IntakeSubsystem.INSTANCE.stop,
                     Gate.INSTANCE.close
+            ).schedule();
+        }).requires(this);
+    }
+
+    public Command stopLauncherAndIdle() {
+        return new InstantCommand(() -> {
+            new ParallelGroup(
+                    Launcher.INSTANCE.stop,
+                    IntakeSubsystem.INSTANCE.idle
                     ).schedule();
         }).requires(this);
     }
 
-    public Command autonLaunch =
-            new SequentialGroup(Gate.INSTANCE.close,
-                    //IntakeSubsystem.INSTANCE.start
-                    new Delay(.25),
-                    Gate.INSTANCE.open,
-                    new Delay(4),
-                    new ParallelGroup(
-                            Launcher.INSTANCE.stop,
-                            //IntakeSubsystem.INSTANCE.stop,
-                            Gate.INSTANCE.close)
-                ).requires(this);
+    public Command stopLauncher() {
+        return new InstantCommand(() -> {
+            new ParallelGroup(
+                    Launcher.INSTANCE.stop
+            ).schedule();
+        }).requires(this);
+    }
 
-
+    public Command closeGateAndIdle() {
+        return new InstantCommand(() -> {
+            new ParallelGroup(
+                    IntakeSubsystem.INSTANCE.idle,
+                    Gate.INSTANCE.close
+            ).schedule();
+        }).requires(this);
+    }
     public Command adjustPowerFactor(double adjustment) {
         return new InstantCommand(() -> {
             backPowerFactor = adjust(backPowerFactor, adjustment);
@@ -126,6 +126,13 @@ public class LauncherSubsystem extends SubsystemGroup {
         super.periodic();
         ActiveOpMode.telemetry().addData("back powerFactor:", backPowerFactor);
         ActiveOpMode.telemetry().addData("top powerFactor:", topPowerFactor);
+    }
+
+    public Command setShootingPositionAndWarmup(ShootingPosition shootingPosition) {
+        return new InstantCommand(() -> {
+            this.shootingPosition = shootingPosition;
+            this.warmup.schedule();
+        }).requires(this);
     }
 }
 

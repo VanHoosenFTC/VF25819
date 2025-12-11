@@ -66,9 +66,9 @@ public class HuskyLensSensor {
 
     public boolean tagFound() {
         HuskyLens.Block[] blocks = huskyLens.blocks();
-        ActiveOpMode.telemetry().addData("Block count", blocks.length);
-        for (int i = 0; i < blocks.length; i++) {
-            ActiveOpMode.telemetry().addData("Block", blocks[i].toString());
+        //ActiveOpMode.telemetry().addData("Block count", blocks.length);
+        for (HuskyLens.Block block : blocks) {
+            //ActiveOpMode.telemetry().addData("Block", blocks[i].toString());
             /*
              * Here inside the FOR loop, you could save or evaluate specific info for the currently recognized Bounding Box:
              * - blocks[i].width and blocks[i].height   (size of box, in pixels)
@@ -78,7 +78,7 @@ public class HuskyLensSensor {
              *
              * These values have Java type int (integer).
              */
-            if (blocks[i].id == 1 || blocks[i].id == 5) {
+            if (block.id == 1 || block.id == 5) {
                 return true;
             }
         }

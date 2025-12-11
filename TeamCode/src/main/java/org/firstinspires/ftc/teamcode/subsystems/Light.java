@@ -10,6 +10,11 @@ public class Light implements Subsystem {
     public static final double GREEN = 0.5;
     public static final double RED = 0.28;
 
+    public static final double YELLOW = 0.338;
+
+    public static final double ORANGE = 0.333;
+
+
     public static final double BLUE = 0.62;
     public static final double OFF = 0;
 

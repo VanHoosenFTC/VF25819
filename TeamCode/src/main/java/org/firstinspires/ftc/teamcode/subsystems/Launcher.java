@@ -16,9 +16,12 @@ import dev.nextftc.hardware.impl.MotorEx;
 public class Launcher implements Subsystem {
     public static final Launcher INSTANCE = new Launcher();
 
-    public static final int MAX_VELO = 1;
-    public static final double EJECT_POWER = -MAX_VELO;
-    // public static final int MAX_VELO = 10145;
+    public static final int MAX_VELO = 2080;
+    public static final double EJECT_POWER = -1;
+
+    public static int veloFudgeFactor = 350;
+
+    public static double veloTolerance = 0.15;
 
     private Launcher() {
     }
@@ -35,46 +38,50 @@ public class Launcher implements Subsystem {
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    private double velo;
+    private double goal;
 
     private boolean stopped = true;
 
     public Command start = new InstantCommand(() -> {
         stopped = false;
-        velo = MAX_VELO * powerFactor;
-        new RunToVelocity(controlSystem, 2080*powerFactor).requires(this).schedule();
+        goal = MAX_VELO * powerFactor;
+        new RunToVelocity(controlSystem, goal).requires(this).schedule();
     }).requires(this);
 
     public Command warmup = new InstantCommand(() -> {
         stopped = false;
-        velo = MAX_VELO * powerFactor;
-        new RunToVelocity(controlSystem, (2080*powerFactor)*LauncherSubsystem.warmUpPercent).requires(this).schedule();
+        goal = MAX_VELO * powerFactor;
+        new RunToVelocity(controlSystem, goal*LauncherSubsystem.warmUpPercent).requires(this).schedule();
     }).requires(this);
 
     public Command stop = new InstantCommand(() -> {
         stopped = true;
-        velo = 0;
+        goal = 0;
     }).requires(this);
 
     public Command eject = new InstantCommand(() -> {
         stopped = false;
-        velo = MAX_VELO * EJECT_POWER;
-        new RunToVelocity(controlSystem, 2080*powerFactor).requires(this).schedule();
+        goal = MAX_VELO * EJECT_POWER;
+        new RunToVelocity(controlSystem, goal).requires(this).schedule();
     }).requires(this);
+
+    public boolean nearGoal() {
+        // if the goal +350 is within +/- 15% of the motor.getVelocity then we are near the goal
+        return Math.abs(goal + veloFudgeFactor - motor.getVelocity()) < (goal * veloTolerance);
+    }
 
 
     @Override
     public void periodic() {
         ActiveOpMode.telemetry().addData("Launcher Power Factor", powerFactor);
-        ActiveOpMode.telemetry().addData("Launcher Velocity", velo);
+        ActiveOpMode.telemetry().addData("Launcher goal", goal);
         if (stopped) {
             motor.setPower(0);
         } else {
             motor.setPower(controlSystem.calculate());
         }
-
-        ActiveOpMode.telemetry().addData("motor power", motor.getPower());
-        ActiveOpMode.telemetry().addData("motor velocity", motor.getVelocity());
+        ActiveOpMode.telemetry().addData("Launcher velocity", motor.getVelocity());
+        ActiveOpMode.telemetry().addData("Launcher power", motor.getPower());
 
     }
 

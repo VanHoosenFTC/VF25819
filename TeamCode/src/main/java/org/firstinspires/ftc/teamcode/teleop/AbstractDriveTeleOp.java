@@ -42,6 +42,8 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
     protected ArtifactColorSensor artifactColorSensor = new ArtifactColorSensor();
     protected HuskyLensSensor huskyLensSensor = new HuskyLensSensor();
 
+    private boolean autoLaunchingEnabled = true;
+
     public AbstractDriveTeleOp() {
         addComponents(
                 new SubsystemComponent(LauncherSubsystem.INSTANCE,
@@ -68,9 +70,10 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
         Gamepads.gamepad1().dpadUp().whenBecomesTrue(KickStand.INSTANCE.travel);
         Gamepads.gamepad1().dpadDown().whenBecomesTrue(KickStand.INSTANCE.park);
+        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(KickStand.INSTANCE.raise);
+        Gamepads.gamepad1().dpadRight().whenBecomesTrue(KickStand.INSTANCE.lower);
 
-        //failsafe - reverse the launcher motor if it is going the wrong direction
-        //Gamepads.gamepad2().start().whenBecomesTrue(Launcher.INSTANCE.reverse());
+        Gamepads.gamepad1().leftBumper().whenBecomesTrue(LauncherSubsystem.INSTANCE.stopLauncherAndIntakeAndCloseGate());
 
         //controls to manually control the launcher
         Gamepads.gamepad2().leftStickY().atLeast(0.5).whenBecomesTrue(Launcher.INSTANCE.start);
@@ -82,22 +85,46 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
         Gamepads.gamepad2().leftBumper().whenBecomesTrue(LauncherSubsystem.INSTANCE.adjustPowerFactor(-0.01));
 
 
-        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.TOP));
+        Gamepads.gamepad2().y().whenBecomesTrue(LauncherSubsystem.INSTANCE.setShootingPositionAndWarmup(ShootingPosition.TOP));
+        Gamepads.gamepad2().b().whenBecomesTrue(LauncherSubsystem.INSTANCE.setShootingPositionAndWarmup(ShootingPosition.BACK));
         Gamepads.gamepad2().dpadDown().whenBecomesTrue(Launcher.INSTANCE.stop);
 
-        Gamepads.gamepad2().b().whenBecomesTrue(LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.BACK));
 
         Gamepads.gamepad2().rightTrigger().atLeast(0.5).whenBecomesTrue(LauncherSubsystem.INSTANCE.launchContinuous());
-        Gamepads.gamepad2().rightTrigger().lessThan(0.5).whenBecomesTrue(LauncherSubsystem.INSTANCE.stop());
+        Gamepads.gamepad2().rightTrigger().lessThan(0.5).whenBecomesTrue(LauncherSubsystem.INSTANCE.closeGateAndIdle());
 
         Gamepads.gamepad2().leftTrigger().atLeast(0.5).whenBecomesTrue(Gate.INSTANCE.reverse);
-        Gamepads.gamepad2().leftTrigger().lessThan(0.5).whenBecomesTrue(Gate.INSTANCE.close);
+
+        Gamepads.gamepad2().start().whenBecomesTrue(new InstantCommand(() -> {
+            autoLaunchingEnabled = !autoLaunchingEnabled;
+        }));
+        // Gamepads.gamepad2().leftTrigger().lessThan(0.5).whenBecomesTrue(Gate.INSTANCE.close);
     }
 
 
     @Override
     public void onUpdate() {
         super.onUpdate();
+        ActiveOpMode.telemetry().addData("Auto Launcher Enabled", autoLaunchingEnabled);
+
+        // initialize light off
+        Light.INSTANCE.setColor(Light.OFF).schedule();
+
+        // if the april tag is detected and the launcher is near goal make the light green, if the
+        // april tag is not detected, but the launcher is near goal make the light yellow, if the
+        // april tag is detected, but the launcher is not near goal make the light orange, if both
+        // are undetected do nothing
+        boolean launcherNearGoal = Launcher.INSTANCE.nearGoal();
+        boolean aprilTagFound = huskyLensSensor.tagFound();
+        ActiveOpMode.telemetry().addData("April Tag Found", aprilTagFound);
+        ActiveOpMode.telemetry().addData("Launcher Near Goal", launcherNearGoal);
+        if (aprilTagFound && launcherNearGoal) {
+            Light.INSTANCE.setColor(Light.GREEN).schedule();
+        } else if (aprilTagFound) {
+            Light.INSTANCE.setColor(Light.ORANGE).schedule();
+        } else if (launcherNearGoal) {
+            Light.INSTANCE.setColor(Light.RED).schedule();
+        }
 
         // Detect end game lines for kickstand
         KickstandColorSensor.DetectedColor kickstandColor = kickstandColorSensor.getDetectedColor();
@@ -106,24 +133,20 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
             Light.INSTANCE.setColor(Light.RED).schedule();
         } else if (kickstandColor == KickstandColorSensor.DetectedColor.BLUE) {
             Light.INSTANCE.setColor(Light.BLUE).schedule();
-        } else {
-            Light.INSTANCE.setColor(Light.OFF).schedule();
         }
 
-        // detect artifact in launch ramp
-        boolean artifactFound = artifactColorSensor.artifactFound();
-        ActiveOpMode.telemetry().addData("Artifact detected", artifactFound);
-        if (artifactFound){
-            LauncherSubsystem.INSTANCE.warmUp(ShootingPosition.TOP).schedule();
+        // detect artifact in launch ramp and run launcher if found
+        if (autoLaunchingEnabled) {
+            boolean artifactFound = artifactColorSensor.artifactFound();
+            ActiveOpMode.telemetry().addData("Artifact detected", artifactFound);
+            if (artifactFound) {
+                LauncherSubsystem.INSTANCE.warmup.schedule();
+            } else {
+                LauncherSubsystem.INSTANCE.stopLauncher().schedule();
+            }
         }
-        // detect april tags
-        boolean aprilTagFound = huskyLensSensor.tagFound();
-        ActiveOpMode.telemetry().addData("April Tag Found", aprilTagFound);
-        if (aprilTagFound) {
-            Light.INSTANCE.setColor(Light.GREEN).schedule();
-        }
+
         ActiveOpMode.telemetry().update();
-
     }
 
     @Override

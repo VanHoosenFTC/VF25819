@@ -19,8 +19,8 @@ public class ArtifactColorSensor {
     public static NormalizedColor greenArtifactColors = new NormalizedColor(0.04f, 0.09f, 0.10f);
     public static NormalizedColor robotgreenColors = new NormalizedColor(0.06f, 0.12f, 0.09f);
 
-    public static NormalizedColor purpleArtifactColors = new NormalizedColor(0.05f, 0.05f, 0.05f);
-    public static NormalizedColor yellowArtifactColors = new NormalizedColor(0.01f, 0.07f, 0.03f);
+    public static NormalizedColor purpleArtifactColors = new NormalizedColor(0.07f, 0.05f, 0.07f);
+    public static NormalizedColor yellowArtifactColors = new NormalizedColor(0.02f, 0.06f, 0.03f);
 
     public void init(HardwareMap hardwareMap) {
         this.colorSensor = hardwareMap.get(NormalizedColorSensor.class, "artifact-cs");
@@ -50,8 +50,10 @@ public class ArtifactColorSensor {
             purpleFound = true;
             ActiveOpMode.telemetry().addData("artifact found", "purple");
         } else if (normRed > yellowArtifactColors.redValue && normGreen > yellowArtifactColors.greenValue && normBlue > yellowArtifactColors.blueValue){
-            yellowFound = true;
-            ActiveOpMode.telemetry().addData("artifact found", "yellow");
+            if (normRed < robotgreenColors.redValue && normGreen < robotgreenColors.greenValue && normBlue < robotgreenColors.blueValue) {
+                yellowFound = true;
+                ActiveOpMode.telemetry().addData("artifact found", "yellow");
+            }
         } else {
             ActiveOpMode.telemetry().addData("artifact found", "NONE");
         }

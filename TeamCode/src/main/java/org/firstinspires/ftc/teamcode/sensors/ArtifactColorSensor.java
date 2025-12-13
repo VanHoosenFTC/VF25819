@@ -12,14 +12,14 @@ import dev.nextftc.ftc.ActiveOpMode;
 @Configurable
 public class ArtifactColorSensor {
     private NormalizedColorSensor colorSensor;
-    public static float gain = 4f;
+    public static float gain = 3f;
 
     public static double artifactDistance = 2.9;
 
-    public static NormalizedColor greenArtifactColors = new NormalizedColor(0.04f, 0.09f, 0.10f);
-    public static NormalizedColor robotgreenColors = new NormalizedColor(0.06f, 0.12f, 0.09f);
+    public static NormalizedColor greenArtifactColors = new NormalizedColor(0.02f, 0.05f, 0.04f);
+    public static NormalizedColor robotgreenColors = new NormalizedColor(0.04f, 0.08f, 0.06f);
 
-    public static NormalizedColor purpleArtifactColors = new NormalizedColor(0.07f, 0.05f, 0.07f);
+    public static NormalizedColor purpleArtifactColors = new NormalizedColor(0.02f, 0.04f, 0.04f);
     public static NormalizedColor yellowArtifactColors = new NormalizedColor(0.02f, 0.06f, 0.03f);
 
     public void init(HardwareMap hardwareMap) {
@@ -47,14 +47,18 @@ public class ArtifactColorSensor {
                 ActiveOpMode.telemetry().addData("artifact found", "green");
             }
         } else if (normRed > purpleArtifactColors.redValue && normGreen > purpleArtifactColors.greenValue && normBlue > purpleArtifactColors.blueValue) {
+            if (normRed < robotgreenColors.redValue && normGreen < robotgreenColors.greenValue && normBlue < robotgreenColors.blueValue) {
+                purpleFound = true;
+                ActiveOpMode.telemetry().addData("artifact found", "purple");
+            }
             purpleFound = true;
             ActiveOpMode.telemetry().addData("artifact found", "purple");
-        } else if (normRed > yellowArtifactColors.redValue && normGreen > yellowArtifactColors.greenValue && normBlue > yellowArtifactColors.blueValue){
-            if (normRed < robotgreenColors.redValue && normGreen < robotgreenColors.greenValue && normBlue < robotgreenColors.blueValue) {
-                yellowFound = true;
-                ActiveOpMode.telemetry().addData("artifact found", "yellow");
-            }
-        } else {
+//        } else if (normRed > yellowArtifactColors.redValue && normGreen > yellowArtifactColors.greenValue && normBlue > yellowArtifactColors.blueValue){
+//            if (normRed < robotgreenColors.redValue && normGreen < robotgreenColors.greenValue && normBlue < robotgreenColors.blueValue) {
+//                yellowFound = true;
+//                ActiveOpMode.telemetry().addData("artifact found", "yellow");
+//            }
+       } else {
             ActiveOpMode.telemetry().addData("artifact found", "NONE");
         }
 

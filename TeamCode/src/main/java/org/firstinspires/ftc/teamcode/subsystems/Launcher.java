@@ -42,6 +42,8 @@ public class Launcher implements Subsystem {
 
     private boolean stopped = true;
 
+    public boolean disabled = false;
+
     public Command start = new InstantCommand(() -> {
         stopped = false;
         goal = MAX_VELO * powerFactor;
@@ -70,6 +72,14 @@ public class Launcher implements Subsystem {
         return Math.abs(goal + veloFudgeFactor - motor.getVelocity()) < (goal * veloTolerance);
     }
 
+    public Command disable = new InstantCommand(() -> {
+        disabled = true;
+    }).requires(this);
+    public Command enable = new InstantCommand(() -> {
+        disabled = false;
+    }).requires(this);
+
+
 
     @Override
     public void periodic() {
@@ -78,7 +88,12 @@ public class Launcher implements Subsystem {
         if (stopped) {
             motor.setPower(0);
         } else {
-            motor.setPower(controlSystem.calculate());
+            if(disabled) {
+                motor.setPower(0);
+            } else{
+
+                motor.setPower(controlSystem.calculate());
+            }
         }
         ActiveOpMode.telemetry().addData("Launcher velocity", motor.getVelocity());
         ActiveOpMode.telemetry().addData("Launcher power", motor.getPower());

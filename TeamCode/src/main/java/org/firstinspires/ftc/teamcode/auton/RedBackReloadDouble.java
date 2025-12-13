@@ -1,33 +1,35 @@
 package org.firstinspires.ftc.teamcode.auton;
 
-import static org.firstinspires.ftc.teamcode.auton.AutonConstants.*;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackEndPose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackPickUpOne;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackPickUpOneStage;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackPickUpTwo;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackPickUpTwoStage;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackScorePose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.redBackStartPose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.shootingTime;
 
-import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.ShootingPosition;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
-import org.firstinspires.ftc.teamcode.subsystems.LauncherSubsystem;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.delays.WaitUntil;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
-import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
-import dev.nextftc.ftc.NextFTCOpMode;
-import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Autonomous(name = "Red - Back Zone - Reload Double", group = "1")
-public class RedBackReloadDouble extends NextFTCOpMode {
+public class RedBackReloadDouble extends VikingForceAutonBase {
     private TelemetryManager panelsTelemetry;
 
     private Path scorePreload;
@@ -46,75 +48,80 @@ public class RedBackReloadDouble extends NextFTCOpMode {
     private PathChain leave;
 
     public RedBackReloadDouble() {
-        addComponents(new PedroComponent(Constants::createFollower), new SubsystemComponent(LauncherSubsystem.INSTANCE, IntakeSubsystem.INSTANCE), BulkReadComponent.INSTANCE);
+        super(redBackStartPose, ShootingPosition.BACK);
     }
 
-    private Command autonomousRoutine() {
+    Command autonomousRoutine() {
         return new SequentialGroup(
-                Launcher.INSTANCE.warmup,
-                new FollowPath(scorePreload, true, 0.9),
-                IntakeSubsystem.INSTANCE.start,
-                Launcher.INSTANCE.start,
-                new Delay(0.05),
+                new ParallelGroup(
+                        Launcher.INSTANCE.start,
+                        new FollowPath(scorePreload, true, 1.00),
+                        IntakeSubsystem.INSTANCE.start
+                ),
+                new WaitUntil(Launcher.INSTANCE::nearGoal),
                 Gate.INSTANCE.open,
-                new Delay(4),
-                IntakeSubsystem.INSTANCE.stop,
+                new Delay(shootingTime),
+                Gate.INSTANCE.close,
+                new WaitUntil(Launcher.INSTANCE::nearGoal),
+                Gate.INSTANCE.open,
+                new Delay(shootingTime),
+                Gate.INSTANCE.close,
+                new WaitUntil(Launcher.INSTANCE::nearGoal),
+                Gate.INSTANCE.open,
+                new Delay(shootingTime),
+                new ParallelGroup(
+                        Gate.INSTANCE.close,
+                        new FollowPath(moveToPickUpOne, false, 1.00),
+                        Launcher.INSTANCE.stop
+                ),
+                new FollowPath(doPickUpOne, false, 1.00),
+                new ParallelGroup(
+                        new FollowPath(scorePickUpOne, true, 1.00),
+                        Launcher.INSTANCE.start
+                ),
+                new WaitUntil(Launcher.INSTANCE::nearGoal),
+                Gate.INSTANCE.open,
+                new Delay(shootingTime),
+                Gate.INSTANCE.close,
+                new WaitUntil(Launcher.INSTANCE::nearGoal),
+                Gate.INSTANCE.open,
+                new Delay(shootingTime),
+                Gate.INSTANCE.close,
+                new WaitUntil(Launcher.INSTANCE::nearGoal),
+                Gate.INSTANCE.open,
+                new Delay(shootingTime),
+                new ParallelGroup(
+                        Gate.INSTANCE.close,
+                        new FollowPath(moveToPickUpTwo, false, 1.00),
+                        Launcher.INSTANCE.stop
+                ),
+                new FollowPath(doPickUpTwo, false, 1.00),
+                new ParallelGroup(
+                        new FollowPath(scorePickUpTwo, true, 1.00),
+                        Launcher.INSTANCE.start
+                ),
+                new WaitUntil(Launcher.INSTANCE::nearGoal),
+                Gate.INSTANCE.open,
+                new Delay(shootingTime),
+                Gate.INSTANCE.close,
+                new WaitUntil(Launcher.INSTANCE::nearGoal),
+                Gate.INSTANCE.open,
+                new Delay(shootingTime),
+                Gate.INSTANCE.close,
+                new WaitUntil(Launcher.INSTANCE::nearGoal),
+                Gate.INSTANCE.open,
+                new Delay(shootingTime),
                 Gate.INSTANCE.close,
                 new ParallelGroup(
                         Launcher.INSTANCE.stop,
-                        IntakeSubsystem.INSTANCE.start,
-                        new FollowPath(moveToPickUpOne, false, 1.00)
-                ),
-                new FollowPath(doPickUpOne, true, 1.00),
-                IntakeSubsystem.INSTANCE.idle,
-                new ParallelGroup(
-                        Launcher.INSTANCE.warmup,
-                        new FollowPath(scorePickUpOne, true, 0.9)
-                ),
-                IntakeSubsystem.INSTANCE.start,
-                Launcher.INSTANCE.start,
-                new Delay(0.05),
-                Gate.INSTANCE.open,
-                new Delay(4),
-                IntakeSubsystem.INSTANCE.stop,
-                Gate.INSTANCE.close,
-                new ParallelGroup(
-                        Launcher.INSTANCE.stop,
-                        IntakeSubsystem.INSTANCE.start,
-                        new FollowPath(moveToPickUpTwo, false, 1.00)
-                ),
-                new FollowPath(doPickUpTwo, true, 1.00),
-                IntakeSubsystem.INSTANCE.idle,
-                new ParallelGroup(
-                        Launcher.INSTANCE.warmup,
-                        new FollowPath(scorePickUpTwo, true, 0.9)
-                ),
-                IntakeSubsystem.INSTANCE.start,
-                Launcher.INSTANCE.start,
-                new Delay(0.05),
-                Gate.INSTANCE.open,
-                new Delay(4),
-                IntakeSubsystem.INSTANCE.stop,
-                Gate.INSTANCE.close,
-                new ParallelGroup(
-                        Launcher.INSTANCE.stop,
+                        IntakeSubsystem.INSTANCE.stop,
                         new FollowPath(leave, true, 1.00)
                 )
 
         );
     }
 
-
-    @Override
-    public void onStartButtonPressed() {
-        PedroComponent.follower().setStartingPose(redBackStartPose);
-        PedroComponent.follower().setPose(redBackStartPose);
-        buildPaths();
-        Launcher.setPowerFactor(BackLauncherPercent);
-        autonomousRoutine().schedule();
-    }
-
-    private void buildPaths() {
+    void buildPaths() {
         scorePreload = new Path(new BezierLine(redBackStartPose, redBackScorePose));
         scorePreload.setLinearHeadingInterpolation(redBackStartPose.getHeading(), redBackScorePose.getHeading());
 
@@ -133,27 +140,4 @@ public class RedBackReloadDouble extends NextFTCOpMode {
         leave = PedroComponent.follower().pathBuilder().addPath(new BezierLine(redBackScorePose, redBackEndPose)).setLinearHeadingInterpolation(redBackScorePose.getHeading(), redBackEndPose.getHeading()).build();
     }
 
-    @Override
-    public void onInit() {
-        super.onInit();
-        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-        Gate.INSTANCE.open.schedule();
-        Gate.INSTANCE.close.schedule();
-        Intake.INSTANCE.idle.schedule();
-    }
-
-    private void log(String caption, Object... text) {
-        if (text.length == 1) {
-            telemetry.addData(caption, text[0]);
-            panelsTelemetry.debug(caption + ": " + text[0]);
-        } else if (text.length >= 2) {
-            StringBuilder message = new StringBuilder();
-            for (int i = 0; i < text.length; i++) {
-                message.append(text[i]);
-                if (i < text.length - 1) message.append(" ");
-            }
-            telemetry.addData(caption, message.toString());
-            panelsTelemetry.debug(caption + ": " + message);
-        }
-    }
 }

@@ -18,8 +18,8 @@ import dev.nextftc.hardware.impl.MotorEx;
 @Configurable
 public class KickStand implements Subsystem {
     public static final KickStand INSTANCE = new KickStand();
-    public static int PARKED_POSITION = -1100;
-    public static int TRAVEL_POSITION = -100;
+    public static int PARKED_POSITION = -800;
+    public static int TRAVEL_POSITION = 0;
     public static int KICKSTAND_VELOCITY = 500;
     public static int adjustment = 25;
     private int position = TRAVEL_POSITION;
@@ -53,11 +53,15 @@ public class KickStand implements Subsystem {
         motor.setTargetPosition(position);
         motor.setVelocity(KICKSTAND_VELOCITY);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        ActiveOpMode.telemetry().addData("Kickstand position", position);
     }
 
     @Override
     public void initialize() {
         motor = ActiveOpMode.hardwareMap().get(DcMotorEx.class, "KICKSTAND");
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setTargetPosition(0);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //motor.setCurrentPosition(0);
     }

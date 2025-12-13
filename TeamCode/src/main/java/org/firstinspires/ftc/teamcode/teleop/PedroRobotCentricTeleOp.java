@@ -30,7 +30,7 @@ public class PedroRobotCentricTeleOp extends AbstractDriveTeleOp {
         return new PedroDriverControlled(
                 Gamepads.gamepad1().leftStickY().negate(),
                 Gamepads.gamepad1().leftStickX(),
-                Gamepads.gamepad1().rightStickX()
+                Gamepads.gamepad1().rightStickX().negate()
         );
 
 

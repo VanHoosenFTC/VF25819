@@ -5,20 +5,24 @@ import com.pedropathing.geometry.Pose;
 
 @Configurable
 public class AutonConstants {
-    public static double BackLauncherPercent = .71;
-    public static double TopLauncherPercent = .51;
+    public static double BackLauncherPercent = .69;
+    public static double TopLauncherPercent = .52;
 
-    public static Pose blueFrontScorePose = new Pose(54, 84, Math.toRadians(310));
+    public static double shootingTime = 0.8;
+
+    public static double transitionWait = 0;
+
+    public static Pose blueFrontScorePose = new Pose(51, 87, Math.toRadians(310));
     public static Pose blueFrontStartPose = new Pose(30, 136, Math.toRadians(270));
     public static Pose blueFrontEndPose = new Pose(30, 48, Math.toRadians(180));
     public static Pose blueFrontPickUpOneStage = new Pose(42, 74, Math.toRadians(180));
-    public static Pose blueFrontPickUpOne = new Pose(11, 74, Math.toRadians(180));
+    public static Pose blueFrontPickUpOne = new Pose(10, 74, Math.toRadians(180));
     public static Pose blueFrontPickUpTwoStage = new Pose(42, 50, Math.toRadians(180));
-    public static Pose blueFrontPickUpTwo = new Pose(13, 50, Math.toRadians(180));
+    public static Pose blueFrontPickUpTwo = new Pose(10, 50, Math.toRadians(180));
     public static Pose redFrontStartPose = new Pose(114, 136, Math.toRadians(270));
-    public static Pose redFrontScorePose = new Pose(86, 74, Math.toRadians(230));
+    public static Pose redFrontScorePose = new Pose(88, 78, Math.toRadians(230));
     public static Pose redFrontEndPose = new Pose(96, 48, Math.toRadians(180));
-    public static Pose redFrontSafePose = new Pose(127, 108, Math.toRadians(180));
+    public static Pose redFrontSafePose = new Pose(120, 100, Math.toRadians(180));
 
     public static Pose redFrontPickUpOneStage = new Pose(85, 98, Math.toRadians(0));
     public static Pose redFrontPickUpOne = new Pose(115, 98, Math.toRadians(0));
@@ -43,7 +47,7 @@ public class AutonConstants {
     public static Pose blueBackPickUpTwoStage = new Pose(40, 49, Math.toRadians(180));
     public static Pose blueBackPickUpTwo = new Pose(10, 49, Math.toRadians(180));
 
-    public static Pose blueFrontSafepose = new Pose(12, 115, Math.toRadians(0));
+    public static Pose blueFrontSafepose = new Pose(10, 110, Math.toRadians(0));
 
 
     public static Pose redBackSafePose = new Pose(108, 13, Math.toRadians(270));

@@ -22,7 +22,7 @@ public class LauncherSubsystem extends SubsystemGroup {
     private  double topPowerFactor = AutonConstants.TopLauncherPercent;
     private  double backPowerFactor = AutonConstants.BackLauncherPercent;
 
-    public static double minPower = 0.5;
+    public static double minPower = 0.4;
     public static double maxPower = 1.0;
 
     private LauncherSubsystem() {

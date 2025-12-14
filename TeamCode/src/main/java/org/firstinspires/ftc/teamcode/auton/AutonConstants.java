@@ -34,7 +34,7 @@ public class AutonConstants {
     public static Pose redFrontStartPose = new Pose(114, 136, Math.toRadians(270));
 
     public static Pose redFrontProtoStartPose = new Pose(115, 128, Math.toRadians(225));
-    public static Pose redFrontScorePose = new Pose(88, 78, Math.toRadians(230));
+    public static Pose redFrontScorePose = new Pose(97, 85, Math.toRadians(230));
 
     public static Pose redFrontProtoScorePose = new Pose(78,104, Math.toRadians(225));
     public static Pose redFrontEndPose = new Pose(96, 48, Math.toRadians(180));

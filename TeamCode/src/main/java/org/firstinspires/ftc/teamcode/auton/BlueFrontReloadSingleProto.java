@@ -5,9 +5,10 @@ import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueFrontProto
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueFrontProtoPickUpOneStage;
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueFrontProtoPickUpTwo;
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueFrontProtoPickUpTwoStage;
-import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueFrontProtoStartPose;
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueFrontProtoScorePose;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueFrontProtoStartPose;
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.shootingTime;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.thirdShootingTime;
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.transitionWait;
 
 import com.pedropathing.geometry.BezierLine;
@@ -29,8 +30,8 @@ import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
 
-@Autonomous(name = "blue - Front Zone - Reload Double Proto", group = "4")
-public class BlueFrontReloadDoubleProto extends VikingForceAutonBase {
+@Autonomous(name = "blue - Front Zone - Reload Single Proto", group = "4")
+public class BlueFrontReloadSingleProto extends VikingForceAutonBase {
 
     private Path scorePreload;
 
@@ -40,18 +41,13 @@ public class BlueFrontReloadDoubleProto extends VikingForceAutonBase {
 
     private PathChain scorePickUpOne;
 
-    private PathChain moveToPickUpTwo;
-
-    private PathChain doPickUpTwo;
-
-    private PathChain scorePickUpTwo;
     private PathChain leave;
 
-    public BlueFrontReloadDoubleProto() {
+    public BlueFrontReloadSingleProto() {
         super(blueFrontProtoStartPose, ShootingPosition.TOP);
     }
 
-    public BlueFrontReloadDoubleProto(Pose startPose, ShootingPosition shootingPosition) {
+    public BlueFrontReloadSingleProto(Pose startPose, ShootingPosition shootingPosition) {
         super(startPose, shootingPosition);
     }
 
@@ -72,7 +68,7 @@ public class BlueFrontReloadDoubleProto extends VikingForceAutonBase {
                 Gate.INSTANCE.close,
                 new WaitUntil(Launcher.INSTANCE::nearGoal),
                 Gate.INSTANCE.open,
-                new Delay(shootingTime),
+                new Delay(thirdShootingTime),
                 Gate.INSTANCE.close,
                 new FollowPath(moveToPickUpOne, false, 1.00),
                 new FollowPath(doPickUpOne, false, 1.00),
@@ -87,29 +83,9 @@ public class BlueFrontReloadDoubleProto extends VikingForceAutonBase {
                 Gate.INSTANCE.close,
                 new WaitUntil(Launcher.INSTANCE::nearGoal),
                 Gate.INSTANCE.open,
-                new Delay(shootingTime),
+                new Delay(thirdShootingTime),
                 Gate.INSTANCE.close,
 //                new TurnTo(Angle.fromDeg(0)),
-                new FollowPath(moveToPickUpTwo, true, 1.0
-
-
-                ),
-                new Delay(transitionWait),
-                new FollowPath(doPickUpTwo, true, 1.00),
-                new Delay(transitionWait),
-                new FollowPath(scorePickUpTwo, true, 1.00),
-                new WaitUntil(Launcher.INSTANCE::nearGoal),
-                Gate.INSTANCE.open,
-                new Delay(shootingTime),
-                Gate.INSTANCE.close,
-                new WaitUntil(Launcher.INSTANCE::nearGoal),
-                Gate.INSTANCE.open,
-                new Delay(shootingTime),
-                Gate.INSTANCE.close,
-                new WaitUntil(Launcher.INSTANCE::nearGoal),
-                Gate.INSTANCE.open,
-                new Delay(shootingTime),
-                Gate.INSTANCE.close,
                 new ParallelGroup(
                         Launcher.INSTANCE.stop,
                         IntakeSubsystem.INSTANCE.stop,
@@ -134,18 +110,6 @@ public class BlueFrontReloadDoubleProto extends VikingForceAutonBase {
         scorePickUpOne = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(blueFrontProtoPickUpOne, blueFrontProtoScorePose))
                 .setLinearHeadingInterpolation(blueFrontProtoPickUpOne.getHeading(), blueFrontProtoScorePose.getHeading()).build();
-
-        moveToPickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(blueFrontProtoScorePose, blueFrontProtoPickUpTwoStage))
-                .setLinearHeadingInterpolation(blueFrontProtoScorePose.getHeading(), blueFrontProtoPickUpTwoStage.getHeading()).build();
-
-        doPickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(blueFrontProtoPickUpTwoStage, blueFrontProtoPickUpTwo))
-                .setLinearHeadingInterpolation(blueFrontProtoPickUpTwoStage.getHeading(), blueFrontProtoPickUpTwo.getHeading()).build();
-
-        scorePickUpTwo = PedroComponent.follower().pathBuilder()
-                .addPath(new BezierLine(blueFrontProtoPickUpTwo, blueFrontProtoScorePose))
-                .setLinearHeadingInterpolation(blueFrontProtoPickUpTwo.getHeading(), blueFrontProtoScorePose.getHeading()).build();
 
         leave = PedroComponent.follower().pathBuilder()
                 .addPath(new BezierLine(blueFrontProtoScorePose, blueFrontProtoEndPose))

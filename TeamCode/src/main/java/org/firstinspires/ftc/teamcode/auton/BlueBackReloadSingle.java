@@ -9,6 +9,7 @@ import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueBackScoreP
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.blueBackStartPose;
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.bluebackSafePose;
 import static org.firstinspires.ftc.teamcode.auton.AutonConstants.shootingTime;
+import static org.firstinspires.ftc.teamcode.auton.AutonConstants.thirdShootingTime;
 
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierLine;
@@ -64,7 +65,7 @@ public class BlueBackReloadSingle extends VikingForceAutonBase {
                 Gate.INSTANCE.close,
                 new WaitUntil(Launcher.INSTANCE::nearGoal),
                 Gate.INSTANCE.open,
-                new Delay(shootingTime),
+                new Delay(thirdShootingTime),
                 new ParallelGroup(
                         Gate.INSTANCE.close,
                         new FollowPath(moveToPickUpOne, false, 0.75),
@@ -85,7 +86,7 @@ public class BlueBackReloadSingle extends VikingForceAutonBase {
                 Gate.INSTANCE.close,
                 new WaitUntil(Launcher.INSTANCE::nearGoal),
                 Gate.INSTANCE.open,
-                new Delay(shootingTime),
+                new Delay(thirdShootingTime),
                 Gate.INSTANCE.close,
                 new ParallelGroup(
                         Launcher.INSTANCE.stop,

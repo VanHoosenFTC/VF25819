@@ -86,7 +86,7 @@ public class RedFrontReloadDoubleProto extends VikingForceAutonBase {
                 new Delay(shootingTime),
                 Gate.INSTANCE.close,
 //                new TurnTo(Angle.fromDeg(0)),
-                new FollowPath(moveToPickUpTwo, true, 0.5
+                new FollowPath(moveToPickUpTwo, true, 1.00
 
 
                 ),
@@ -105,13 +105,7 @@ public class RedFrontReloadDoubleProto extends VikingForceAutonBase {
                 new WaitUntil(Launcher.INSTANCE::nearGoal),
                 Gate.INSTANCE.open,
                 new Delay(shootingTime),
-                Gate.INSTANCE.close,
-                new ParallelGroup(
-                        Launcher.INSTANCE.stop,
-                        IntakeSubsystem.INSTANCE.stop,
-                        new FollowPath(leave, true, 1.00)
-                )
-
+                Gate.INSTANCE.close
         );
     }
 

@@ -5,6 +5,8 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.feedback.PIDCoefficients;
+import dev.nextftc.control.feedforward.BasicFeedforwardParameters;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
@@ -19,18 +21,21 @@ public class Launcher implements Subsystem {
     public static final int MAX_VELO = 2080;
     public static final double EJECT_POWER = -1;
 
-    public static int veloFudgeFactor = 350;
+    public static int veloFudgeFactor = 0;
 
-    public static double veloTolerance = 0.15;
+    public static double veloTolerance = 0.1;
 
     private Launcher() {
     }
 
     private static double powerFactor = 0.70;
 
+    public static PIDCoefficients pid = new PIDCoefficients(0.000005, 0, 0);
+    public static BasicFeedforwardParameters feedforwardParameters = new BasicFeedforwardParameters(0.00033, 3.0, 0.035);
+
     public static ControlSystem controlSystem  = ControlSystem.builder()
-            .velPid(0.0005, 0, 0)
-            .basicFF(0)
+            .velPid(pid)
+            .basicFF(feedforwardParameters)
             .build();
     private MotorEx motor = new MotorEx("LAUNCHER");
 

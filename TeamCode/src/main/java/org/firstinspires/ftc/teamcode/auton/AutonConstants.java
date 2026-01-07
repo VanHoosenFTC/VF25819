@@ -5,10 +5,10 @@ import com.pedropathing.geometry.Pose;
 
 @Configurable
 public class AutonConstants {
-    public static double BackLauncherPercent = .69;
-    public static double TopLauncherPercent = .52;
+    public static double BackLauncherPercent = .79;
+    public static double TopLauncherPercent = .62;
 
-    public static double shootingTime = 1.25;
+    public static double shootingTime = 0.6;
 
     public static double transitionWait = 0;
 
@@ -21,10 +21,10 @@ public class AutonConstants {
     public static Pose blueFrontPickUpTwo = new Pose(10, 50, Math.toRadians(180));
     public static Pose redFrontStartPose = new Pose(114, 136, Math.toRadians(270));
 
-    public static Pose redFrontProtoStartPose = new Pose(87, 104, Math.toRadians(225));
-    public static Pose redFrontScorePose = new Pose(88, 78, Math.toRadians(230));
+    public static Pose redFrontProtoStartPose = new Pose(116, 128, Math.toRadians(225));
+    public static Pose redFrontScorePose = new Pose(95, 85, Math.toRadians(230));
 
-    public static Pose redFrontProtoScorePose = new Pose(78,104, Math.toRadians(225));
+    public static Pose redFrontProtoScorePose = new Pose(87,104, Math.toRadians(225));
     public static Pose redFrontEndPose = new Pose(96, 48, Math.toRadians(180));
 
     public static Pose redFrontProtoEndPose = new Pose(87,104, Math.toRadians(0));
@@ -37,7 +37,7 @@ public class AutonConstants {
     public static Pose redFrontProtoPickUpOne = new Pose(126, 80, Math.toRadians(0));
     public static Pose redFrontPickUpTwoStage = new Pose(85, 74, Math.toRadians(0));
 
-    public static Pose redFrontProtoPickUpTwoStage = new Pose(78,57, Math.toRadians(0));
+    public static Pose redFrontProtoPickUpTwoStage = new Pose(87,57, Math.toRadians(0));
     public static Pose redFrontPickUpTwo = new Pose(115, 74, Math.toRadians(0));
 
     public static Pose redFrontProtoPickUpTwo = new Pose(130,57,Math.toRadians(0));

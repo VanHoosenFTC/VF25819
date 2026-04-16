@@ -62,6 +62,7 @@ public class ArtifactColorSensor {
             ActiveOpMode.telemetry().addData("artifact found", "NONE");
         }
 
-        return greenFound || purpleFound || yellowFound;
+        //return greenFound || purpleFound || yellowFound;
+        return true;
     }
 }

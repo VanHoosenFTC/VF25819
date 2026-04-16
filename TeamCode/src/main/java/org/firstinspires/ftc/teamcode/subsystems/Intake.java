@@ -18,21 +18,19 @@ public class Intake implements Subsystem {
 
     private Intake() { }
 
-    private MotorEx motor = new MotorEx("INTAKE");
+    private MotorEx motor = new MotorEx("Intake");
     
 
     public Command start = new InstantCommand(() -> {
-        velo = -0.825;
+        velo = 0.8;
     }).requires(this);
     public Command stop = new InstantCommand(() -> {
         velo = 0;
     }).requires(this);
 
-    public Command idle = new InstantCommand(() -> {
-            velo = -0.20;
-    }).requires(this);
+
     public Command reverse = new InstantCommand(() -> {
-        velo = 0.9;
+        velo = -0.8;
     }).requires(this);
 
 

@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.sensors.HuskyLensSensor;
 import org.firstinspires.ftc.teamcode.sensors.KickstandColorSensor;
 import org.firstinspires.ftc.teamcode.sensors.ArtifactColorSensor;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.Servointake;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
@@ -39,7 +41,7 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
     public AbstractDriveTeleOp() {
         addComponents(
-                new SubsystemComponent(Intake.INSTANCE),
+                new SubsystemComponent(Intake.INSTANCE, Lift.INSTANCE, Servointake.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -47,12 +49,17 @@ public abstract class AbstractDriveTeleOp extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
+        //important do not delete - schedules the driver controls for field or robot centric
+        Command driverControlled = getDriverControlledCommand();
+        driverControlled.schedule();
         // Gamepads.gamepad2().leftTrigger().lessThan(0.5).whenBecomesTrue(Gate.INSTANCE.close);
         Gamepads.gamepad1().a().whenBecomesTrue(Intake.INSTANCE.start);
         Gamepads.gamepad1().b().whenBecomesTrue(Intake.INSTANCE.stop);
+        Gamepads.gamepad1().y().whenBecomesTrue(Lift.INSTANCE.up);
+        Gamepads.gamepad1().y().whenBecomesFalse(Lift.INSTANCE.down);
+        Gamepads.gamepad2().rightTrigger().greaterThan(0.5).whenBecomesTrue(Servointake.INSTANCE.suckupballs);
+        Gamepads.gamepad2().rightTrigger().greaterThan(0.5).whenBecomesFalse(Servointake.INSTANCE.stop);
     }
-
-
     @Override
     public void onUpdate() {
         super.onUpdate();

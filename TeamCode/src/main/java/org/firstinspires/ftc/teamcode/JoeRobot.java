@@ -11,8 +11,10 @@ import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.data.Alliance;
+import org.firstinspires.ftc.teamcode.mechanisms.ContinuousServoExample;
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
+import org.firstinspires.ftc.teamcode.mechanisms.ServoExample;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.Set;
@@ -29,6 +31,8 @@ public class JoeRobot implements NextRobot {
 //    private final Vision vision = new Vision();
     private final Launcher launcher = new Launcher();
     private final Drivetrain drivetrain = new Drivetrain();
+    private final ContinuousServoExample continuousServoExample = new ContinuousServoExample();
+    private final ServoExample servoExample = new ServoExample();
 
     public JoeRobot(){}
 
@@ -40,6 +44,9 @@ public class JoeRobot implements NextRobot {
     public Launcher getLauncher() {
         return launcher;
     }
+
+    public ContinuousServoExample getContinuousServoExample() { return continuousServoExample;}
+    public ServoExample getServoExample() {return servoExample;}
 
     public void setAlliance(Alliance alliance){
         this.alliance = alliance;
@@ -86,7 +93,7 @@ public class JoeRobot implements NextRobot {
     @NonNull
     @Override
     public Set<Mechanism> getMechanisms() {
-        return Set.of(launcher,drivetrain);
+        return Set.of(launcher,drivetrain, continuousServoExample, servoExample);
     }
 
 }

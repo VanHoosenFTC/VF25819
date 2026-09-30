@@ -32,6 +32,7 @@ public class Launcher implements Mechanism {
     public Launcher(){
         launcherMotor.getVelocityConstants().setKV(kV);
         launcherMotor.getVelocityConstants().setKS(kS);
+        launcherMotor.setDirection(NextMotor.Direction.REVERSE);
     }
 
     public Command init(){

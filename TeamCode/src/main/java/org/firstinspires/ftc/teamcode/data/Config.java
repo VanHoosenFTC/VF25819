@@ -7,7 +7,9 @@ public class Config {
     public static int frontLeftMotor = 2;
     public static int backLeftMotor = 3;
 
-    public static int rampServo = 1    ;
+    public static int continuousServoExample = 0;
+
+    public static int servoExample = 1;
     public static int launcherServo = 2;
     public static int g = 3;
     public static int h = 4;

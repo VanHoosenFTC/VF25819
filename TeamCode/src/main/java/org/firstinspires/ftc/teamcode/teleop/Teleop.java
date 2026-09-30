@@ -43,6 +43,15 @@ public class Teleop extends NextOpMode {
 
         gp1.dpadUp().onTrue(joeRobot.getLauncher().setPollen());
         gp1.dpadDown().onTrue(joeRobot.getLauncher().setNectar());
+        gp1.a().onTrue(joeRobot.getContinuousServoExample().forward(1.0));
+        gp1.a().onFalse(joeRobot.getContinuousServoExample().forward(0));
+        gp1.b().whileTrue(joeRobot.getContinuousServoExample().reverse(-1.0));
+        gp1.b().onFalse(joeRobot.getContinuousServoExample().forward(0));
+        gp1.x().onTrue((joeRobot.getServoExample().open()));
+        gp1.x().onFalse(joeRobot.getServoExample().mid());
+        gp1.y().onTrue(joeRobot.getServoExample().close());
+        gp1.y().onFalse(joeRobot.getServoExample().mid());
+
 
 /*
         gp2.dpadUp().onTrue(hazmatRobot.getLauncher().incrementPower());
@@ -59,6 +68,7 @@ public class Teleop extends NextOpMode {
 //        telemetry.addData("Lift Position", joeRobot.getLift().getPos());
 //        telemetry.addData("Bucket Position", joeRobot.getTransfer().getRampServo().getPosition());
         telemetry.addData("Launcher Motor Velocity", joeRobot.getLauncher().getLauncherMotor().getEncoderVelocity().into(RotationsPerMinute));
+        telemetry.addData("servoExample position", joeRobot.getServoExample().getServo().getPosition());
 
         telemetry.update();
     }

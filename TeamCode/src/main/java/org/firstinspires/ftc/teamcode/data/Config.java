@@ -11,8 +11,8 @@ public class Config {
 
     public static int servoExample = 1;
     public static int launcherServo = 2;
-    public static int g = 3;
-    public static int h = 4;
+    public static int rightservo = 3;
+    public static int leftservo = 4;
 
     public static int bucketSensor = 0;
 

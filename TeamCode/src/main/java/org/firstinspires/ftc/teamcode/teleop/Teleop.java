@@ -51,7 +51,8 @@ public class Teleop extends NextOpMode {
         gp1.x().onFalse(joeRobot.getServoExample().mid());
         gp1.y().onTrue(joeRobot.getServoExample().close());
         gp1.y().onFalse(joeRobot.getServoExample().mid());
-
+        gp1.rightBumper().toggleOnTrue(joeRobot.getFlipper().open());
+        gp1.rightBumper().toggleOnFalse(joeRobot.getFlipper().close());
 
 /*
         gp2.dpadUp().onTrue(hazmatRobot.getLauncher().incrementPower());

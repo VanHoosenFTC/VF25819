@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.data.Alliance;
 import org.firstinspires.ftc.teamcode.mechanisms.ContinuousServoExample;
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain;
+import org.firstinspires.ftc.teamcode.mechanisms.Flipper;
+import org.firstinspires.ftc.teamcode.mechanisms.IntakeWheels;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
 import org.firstinspires.ftc.teamcode.mechanisms.ServoExample;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
@@ -31,6 +33,19 @@ public class JoeRobot implements NextRobot {
 //    private final Vision vision = new Vision();
     private final Launcher launcher = new Launcher();
     private final Drivetrain drivetrain = new Drivetrain();
+
+    private final Flipper flipper = new Flipper();
+
+    private final IntakeWheels intakeWheels = new IntakeWheels();
+
+    public Flipper getFlipper() {
+        return flipper;
+    }
+
+    public IntakeWheels getIntakeWheels() {
+        return intakeWheels;
+    }
+
     private final ContinuousServoExample continuousServoExample = new ContinuousServoExample();
     private final ServoExample servoExample = new ServoExample();
 
@@ -93,7 +108,7 @@ public class JoeRobot implements NextRobot {
     @NonNull
     @Override
     public Set<Mechanism> getMechanisms() {
-        return Set.of(launcher,drivetrain, continuousServoExample, servoExample);
+        return Set.of(launcher,drivetrain, continuousServoExample, servoExample, flipper, intakeWheels);
     }
 
 }

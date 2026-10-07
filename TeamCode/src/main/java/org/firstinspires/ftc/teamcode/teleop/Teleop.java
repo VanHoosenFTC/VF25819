@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import static com.pedropathing.ivy.commands.Commands.instant;
 
+import static dev.nextftc.units.Units.Degrees;
 import static dev.nextftc.units.Units.RotationsPerMinute;
 
 import com.pedropathing.ivy.Scheduler;
@@ -54,6 +55,11 @@ public class Teleop extends NextOpMode {
         gp1.rightBumper().toggleOnTrue(joeRobot.getFlipper().open());
         gp1.rightBumper().toggleOnFalse(joeRobot.getFlipper().close());
 
+        gp2.x().toggleOnTrue(joeRobot.getTurret().goLeft());
+        gp2.a().toggleOnTrue(joeRobot.getTurret().goHome());
+        gp2.b().toggleOnTrue(joeRobot.getTurret().goRight());
+
+
 /*
         gp2.dpadUp().onTrue(hazmatRobot.getLauncher().incrementPower());
         gp2.dpadDown().onTrue(hazmatRobot.getLauncher().decrementPower());*/
@@ -70,6 +76,7 @@ public class Teleop extends NextOpMode {
 //        telemetry.addData("Bucket Position", joeRobot.getTransfer().getRampServo().getPosition());
         telemetry.addData("Launcher Motor Velocity", joeRobot.getLauncher().getLauncherMotor().getEncoderVelocity().into(RotationsPerMinute));
         telemetry.addData("servoExample position", joeRobot.getServoExample().getServo().getPosition());
+        telemetry.addData("Turret current position", joeRobot.getTurret().getTurretMotor().getEncoderPosition().into(Degrees));
 
         telemetry.update();
     }

@@ -20,5 +20,6 @@ public class Config {
     //Expansion hub
     public static int frontRightMotor = 0;
     public static int backRightMotor = 1;
+    public static int turretMotor = 2;
 
 }

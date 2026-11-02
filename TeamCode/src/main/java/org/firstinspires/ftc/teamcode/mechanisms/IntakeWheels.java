@@ -18,24 +18,30 @@ public class IntakeWheels implements Mechanism {
     private NextCRServo leftServo = new NextCRServo(RobotController.controlHub(), Config.leftServo);
 
 
-    public Command forward(double power){
-        leftServo.setDirection(NextMotor.Direction.REVERSE);
-        rightServo.setDirection(NextMotor.Direction.FORWARD);
-        return instant(()-> leftServo.setPower(power));
+    public Command forward(double power) {
+        leftServo.setDirection(NextMotor.Direction.FORWARD);
+        rightServo.setDirection(NextMotor.Direction.REVERSE);
+//        return instant(()-> leftServo.setPower(power));
 
-//        return instant(new Runnable() {
-//            @Override
-//            public void run() {
-//                leftServo.setPower(power);
-//                rightServo.setPower(power);
-//            }
-//        });
+        return instant(new Runnable() {
+            @Override
+            public void run() {
+                leftServo.setPower(power);
+                rightServo.setPower(power);
+            }
+        });
     }
 
     public Command reverse(double power){
-        leftServo.setDirection(NextMotor.Direction.FORWARD);
-        rightServo.setDirection(NextMotor.Direction.REVERSE);
-        return instant(()-> leftServo.setPower(power));
+        leftServo.setDirection(NextMotor.Direction.REVERSE);
+        rightServo.setDirection(NextMotor.Direction.FORWARD);
+        return instant(new Runnable() {
+            @Override
+            public void run() {
+                leftServo.setPower(power);
+                rightServo.setPower(power);
+            }
+        });
 
     }
 

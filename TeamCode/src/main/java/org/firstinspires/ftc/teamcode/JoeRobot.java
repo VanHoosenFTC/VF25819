@@ -14,10 +14,11 @@ import org.firstinspires.ftc.teamcode.data.Alliance;
 import org.firstinspires.ftc.teamcode.mechanisms.ContinuousServoExample;
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.Flipper;
+import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.IntakeWheels;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
-import org.firstinspires.ftc.teamcode.mechanisms.ServoExample;
 import org.firstinspires.ftc.teamcode.mechanisms.Turret;
+import org.firstinspires.ftc.teamcode.mechanisms.Vision;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import java.util.Set;
@@ -26,6 +27,7 @@ import dev.nextftc.hardware.RobotController;
 import dev.nextftc.robot.Mechanism;
 import dev.nextftc.robot.NextRobot;
 import dev.nextftc.robot.drive.DriveCommands;
+import dev.nextftc.robot.triggers.CommandGamepad;
 
 public class JoeRobot implements NextRobot {
     private  Follower follower;
@@ -42,6 +44,18 @@ public class JoeRobot implements NextRobot {
 
     private final IntakeWheels intakeWheels = new IntakeWheels();
 
+    private final Vision vision = new Vision();
+
+    public Intake getIntake() {
+        return intake;
+    }
+
+    private final Intake intake = new Intake();
+
+    public Vision getVision() {
+        return vision;
+    }
+
     public Flipper getFlipper() {
         return flipper;
     }
@@ -51,7 +65,6 @@ public class JoeRobot implements NextRobot {
     }
 
     private final ContinuousServoExample continuousServoExample = new ContinuousServoExample();
-    private final ServoExample servoExample = new ServoExample();
 
     public JoeRobot(){}
 
@@ -69,7 +82,6 @@ public class JoeRobot implements NextRobot {
     }
 
     public ContinuousServoExample getContinuousServoExample() { return continuousServoExample;}
-    public ServoExample getServoExample() {return servoExample;}
 
     public void setAlliance(Alliance alliance){
         this.alliance = alliance;
@@ -97,16 +109,21 @@ public class JoeRobot implements NextRobot {
         ).schedule();
     }
 
+    public void startTurret(CommandGamepad gamepad2) {
+        getTurret().setGamepad(gamepad2);
+        getTurret().getDefaultCommand().schedule();
+    }
+
     public Command init(){
         return parallel(
-            launcher.setPollen()
+//            launcher.setPollen()
         );
     }
 
     public Command launch(){
         return sequential(
-            launcher.setPoint1(),
-            waitMs(2000),
+            launcher.shoot(),
+            waitMs(4000),
             launcher.stopLauncher()
 
         );
@@ -116,7 +133,7 @@ public class JoeRobot implements NextRobot {
     @NonNull
     @Override
     public Set<Mechanism> getMechanisms() {
-        return Set.of(launcher,drivetrain, continuousServoExample, servoExample, flipper, intakeWheels, turret);
+        return Set.of(launcher,drivetrain, continuousServoExample, flipper, intakeWheels, turret, vision, intake);
     }
 
 }

@@ -8,6 +8,7 @@ import com.pedropathing.ivy.Command;
 import dev.nextftc.hardware.RobotController;
 import dev.nextftc.hardware.actuators.NextMotor;
 import dev.nextftc.robot.Mechanism;
+import dev.nextftc.robot.triggers.CommandGamepad;
 import dev.nextftc.units.measuretypes.Angle;
 
 import org.firstinspires.ftc.teamcode.data.Config;
@@ -25,8 +26,9 @@ public class Turret implements Mechanism {
 
     private static final Angle ANGLE_PER_COUNT = Degrees.of(360.0 / TICKS_PER_TURNTABLE_REV);
 
+    // Motor hardware instantiated on the Control Hub
     private final NextMotor turretMotor = new NextMotor(
-            RobotController.expansionHub(),
+            RobotController.controlHub(),
             Config.turretMotor,
             ANGLE_PER_COUNT,
             0.01
@@ -40,12 +42,22 @@ public class Turret implements Mechanism {
 
     // Tuning constants
     public double kP = 0.01;
-    public double kS = 0.16;
+    public double kS = 0.05; // Lowered to prevent jitter at resting target
     public double kV = 0.0000571;
 
-    // Lazy-loaded baseline handling
+    // Lazy-loaded baseline handling & state tracking
     private boolean isZeroed = false;
     private double zeroOffsetDeg = 0.0;
+    private double currentTargetDeg = 0.0;
+    private final double MAX_SPEED_DEG_PER_SEC = 360.0; // Increased for snappy manual control
+    private final Angle MIN_TURRET_ANGLE_DEG = LEFT_ANGLE;
+    private final Angle MAX_TURRET_ANGLE_DEG = RIGHT_ANGLE;
+
+    // Diagnostic tracking fields
+    private double lastRawEncoderPos = Double.NaN;
+    private int freezeCounter = 0;
+
+    private CommandGamepad gamepad;
 
     public Turret() {
         turretMotor.setZeroPowerBehavior(NextMotor.ZeroPowerBehavior.BRAKE);
@@ -56,25 +68,42 @@ public class Turret implements Mechanism {
                 .withV(kV);
     }
 
+    /**
+     * Links the TeleOp gamepad to the subsystem for manual control.
+     */
+    public void setGamepad(CommandGamepad gamepad) {
+        this.gamepad = gamepad;
+    }
+
+    @Override
+    public Command getDefaultCommand() {
+        // Return the command immediately so the Ivy scheduler can register it during robot init.
+        return manualTurretControl();
+    }
+
     private Command moveTo(Angle targetAngle) {
         return infinite(() -> {
-            // Safely capture the physical zero position on the very first execution loop
+            // Safely capture physical zero position on first execution loop
             if (!isZeroed) {
                 zeroOffsetDeg = turretMotor.getEncoderPosition().getMagnitude();
                 isZeroed = true;
             }
 
-            // Shift the target so NextMotor's internal PID targets the correct absolute encoder tick
-            Angle realTarget = Degrees.of(targetAngle.getMagnitude() + zeroOffsetDeg);
+            // Continuously sync currentTargetDeg so manual control picks up seamlessly when this finishes
+            currentTargetDeg = targetAngle.getMagnitude();
+
+            // Shift target so NextMotor's internal PID targets the correct absolute encoder tick
+            Angle realTarget = Degrees.of(currentTargetDeg + zeroOffsetDeg);
             turretMotor.setPositionSetpoint(realTarget);
             turretMotor.update();
 
-            // Calculate logging math against our relative zero so telemetry makes sense
-            double targetDeg = targetAngle.getMagnitude();
-            double currentDeg = turretMotor.getEncoderPosition().getMagnitude() - zeroOffsetDeg;
-            double errorDeg = targetDeg - currentDeg;
+            checkEncoderHealth();
 
-            log("Turret Target (deg)", targetDeg);
+            // Telemetry calculations relative to zero
+            double currentDeg = turretMotor.getEncoderPosition().getMagnitude() - zeroOffsetDeg;
+            double errorDeg = currentTargetDeg - currentDeg;
+
+            log("Turret Target (deg)", currentTargetDeg);
             log("Turret Current (deg)", currentDeg);
             log("Turret Error (deg)", errorDeg);
         })
@@ -85,7 +114,6 @@ public class Turret implements Mechanism {
                     boolean done = Math.abs(currentDeg - targetAngle.getMagnitude()) <= TOLERANCE_DEGREES;
 
                     if (done) {
-                        // Kills the background PID controller and stops the kS chatter
                         turretMotor.setThrottle(0.0);
                     }
 
@@ -107,5 +135,117 @@ public class Turret implements Mechanism {
 
     public NextMotor getTurretMotor() {
         return turretMotor;
+    }
+
+    public Command manualTurretControl() {
+        return infinite(() -> {
+            // Failsafe: Do nothing until Teleop.start() passes the gamepad
+            if (gamepad == null) return;
+
+            // Safely capture physical zero position on first execution loop
+            if (!isZeroed) {
+                zeroOffsetDeg = turretMotor.getEncoderPosition().getMagnitude();
+                currentTargetDeg = 0.0;
+                isZeroed = true;
+            }
+
+            // Read right stick X value (-1.0 to 1.0)
+            double stickX = gamepad.rightStickX().getValue();
+
+            // Apply deadband
+            if (Math.abs(stickX) < 0.05) {
+                stickX = 0.0;
+            }
+
+            // Update setpoint using loop delta time (~20 ms / 50 Hz loop)
+            double dt = 0.02;
+            currentTargetDeg += stickX * MAX_SPEED_DEG_PER_SEC * dt;
+
+            // Enforce soft limits
+            currentTargetDeg = Math.max(
+                    MIN_TURRET_ANGLE_DEG.getMagnitude(),
+                    Math.min(MAX_TURRET_ANGLE_DEG.getMagnitude(), currentTargetDeg)
+            );
+
+            // Telemetry relative to captured zero
+            double currentDeg = turretMotor.getEncoderPosition().getMagnitude() - zeroOffsetDeg;
+            double errorDeg = currentTargetDeg - currentDeg;
+
+            // Jitter Fix: Stop motor output when driver releases stick AND turret reaches target
+            if (stickX == 0.0 && Math.abs(errorDeg) <= TOLERANCE_DEGREES) {
+                turretMotor.setThrottle(0.0);
+            } else {
+                // Shift target angle relative to zeroOffsetDeg and run PID
+                Angle realTarget = Degrees.of(currentTargetDeg + zeroOffsetDeg);
+                turretMotor.setPositionSetpoint(realTarget);
+            }
+
+            turretMotor.update();
+
+            checkEncoderHealth();
+
+            log("Turret Stick Input", stickX);
+            log("Turret Target (deg)", currentTargetDeg);
+            log("Turret Current (deg)", currentDeg);
+            log("Turret Error (deg)", errorDeg);
+        })
+                .setStart(() -> {
+                    // Sync currentTargetDeg to actual motor position whenever this command resumes from an interruption
+                    if (isZeroed) {
+                        currentTargetDeg = turretMotor.getEncoderPosition().getMagnitude() - zeroOffsetDeg;
+                    }
+                })
+                .setEnd(interrupted -> {
+                    turretMotor.setThrottle(0.0);
+                });
+    }
+
+    private void checkEncoderHealth() {
+        double rawPos = turretMotor.getEncoderPosition().getMagnitude();
+
+        log("DIAG: Raw Encoder Pos", rawPos);
+        log("DIAG: Zero Offset (deg)", zeroOffsetDeg);
+
+        if (!Double.isNaN(lastRawEncoderPos)) {
+            double delta = Math.abs(rawPos - lastRawEncoderPos);
+
+            // If motor is moving but encoder delta is 0, count frozen frames
+            if (delta < 0.0001) {
+                freezeCounter++;
+            } else {
+                freezeCounter = 0;
+            }
+        }
+
+        lastRawEncoderPos = rawPos;
+
+        // Log warnings to Telemetry if encoder appears disconnected or unresponsive
+        log("DIAG: Encoder Delta", lastRawEncoderPos);
+        log("DIAG: Frozen Frame Count", freezeCounter);
+        log("DIAG: Encoder Status", freezeCounter > 25 ? "⚠️ ENCODER FROZEN / DISCONNECTED" : "OK");
+    }
+
+    /**
+     * Actively tracks the chosen AprilTag by updating the positional setpoint directly.
+     */
+    public Command trackTarget(Vision vision) {
+        return infinite(() -> {
+            Double tx = vision.getTargetTx();
+
+            if (tx != null && isZeroed) {
+                double currentDeg = turretMotor.getEncoderPosition().getMagnitude() - zeroOffsetDeg;
+                currentTargetDeg = currentDeg + tx;
+
+                // Enforce soft limits
+                currentTargetDeg = Math.max(
+                        MIN_TURRET_ANGLE_DEG.getMagnitude(),
+                        Math.min(MAX_TURRET_ANGLE_DEG.getMagnitude(), currentTargetDeg)
+                );
+
+                Angle realTarget = Degrees.of(currentTargetDeg + zeroOffsetDeg);
+                turretMotor.setPositionSetpoint(realTarget);
+                turretMotor.update();
+            }
+        });
     }
 }

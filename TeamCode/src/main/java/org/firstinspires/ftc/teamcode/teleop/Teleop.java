@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 
-import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.*;
 
 import static dev.nextftc.units.Units.Degrees;
 import static dev.nextftc.units.Units.RotationsPerMinute;
@@ -9,8 +9,10 @@ import static dev.nextftc.units.Units.RotationsPerMinute;
 import com.pedropathing.ivy.Scheduler;
 
 import org.firstinspires.ftc.teamcode.JoeRobot;
+import org.firstinspires.ftc.teamcode.mechanisms.Vision;
 
 
+import dev.nextftc.robot.Telemetry;
 import dev.nextftc.robot.opmode.NextOpMode;
 import dev.nextftc.robot.opmode.NextTeleop;
 import dev.nextftc.robot.triggers.CommandGamepad;
@@ -40,25 +42,51 @@ public class Teleop extends NextOpMode {
         joeRobot.startDrive(gamepad1);
 
         //gp1.leftBumper().onTrue(instant(()-> joeRobot.getIntake().cycle()));
-        gp1.rightBumper().onTrue(joeRobot.launch());
+        //gp1.rightBumper().onTrue(joeRobot.launch());
 
-        gp1.dpadUp().onTrue(joeRobot.getLauncher().setPollen());
-        gp1.dpadDown().onTrue(joeRobot.getLauncher().setNectar());
-        gp1.a().onTrue(joeRobot.getContinuousServoExample().forward(1.0));
-        gp1.a().onFalse(joeRobot.getContinuousServoExample().forward(0));
-        gp1.b().whileTrue(joeRobot.getContinuousServoExample().reverse(-1.0));
-        gp1.b().onFalse(joeRobot.getContinuousServoExample().forward(0));
-        gp1.x().onTrue((joeRobot.getServoExample().open()));
-        gp1.x().onFalse(joeRobot.getServoExample().mid());
-        gp1.y().onTrue(joeRobot.getServoExample().close());
-        gp1.y().onFalse(joeRobot.getServoExample().mid());
-        gp1.rightBumper().toggleOnTrue(joeRobot.getFlipper().open());
-        gp1.rightBumper().toggleOnFalse(joeRobot.getFlipper().close());
+//        gp1.dpadUp().onTrue(joeRobot.getLauncher().setPollen());
+//        gp1.dpadDown().onTrue(joeRobot.getLauncher().setNectar());
 
-        gp2.x().toggleOnTrue(joeRobot.getTurret().goLeft());
-        gp2.a().toggleOnTrue(joeRobot.getTurret().goHome());
-        gp2.b().toggleOnTrue(joeRobot.getTurret().goRight());
+//        gp1.a().onTrue(joeRobot.getIntakeWheels().forward(1));
+//        gp1.a().onFalse(joeRobot.getIntakeWheels().forward(0));
+//        gp1.a().onTrue(joeRobot.getIntake().forward());
+//        gp1.a().onFalse(joeRobot.getIntake().stop());
+//        gp1.x().onTrue(joeRobot.getIntake().reverse());
 
+        gp1.rightTrigger().isOver(.4).whileTrue(joeRobot.getIntake().forward());
+        gp1.rightTrigger().isUnder(.4).whileTrue(joeRobot.getIntake().stop());
+
+        gp1.leftTrigger().isOver(.4).whileTrue(joeRobot.getIntake().reverse());
+        gp1.leftTrigger().isUnder(.4).whileTrue(joeRobot.getIntake().stop());
+
+        joeRobot.startTurret(gp2);
+
+        gp2.rightBumper().onTrue(joeRobot.getFlipper().open());
+        gp2.rightBumper().onFalse(joeRobot.getFlipper().close());
+
+        gp2.rightTrigger().isOver(.4).whileTrue(joeRobot.getLauncher().shoot());
+        gp2.rightTrigger().isUnder(.4).whileTrue(joeRobot.getLauncher().stopLauncher());
+
+        // Driver selection for the 4 sets of tags using the D-Pad
+        gp2.dpadUp().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_1)));
+        gp2.dpadDown().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_2)));
+        gp2.dpadLeft().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_3)));
+        gp2.dpadRight().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_4)));
+
+        gp2.rightBumper().onTrue(joeRobot.getLauncher().increaseSpeed());
+        gp2.leftBumper().onTrue(joeRobot.getLauncher().decreaseSpeed());
+
+////        gp2.y().onTrue(joeRobot.getLauncher().shoot());
+////        gp2.y().onFalse(joeRobot.getLauncher().stopLauncher());
+//        //gp2.rightTrigger().isOver(.5).onTrue(joeRobot.getLauncher().shoot());
+        // Preset positioning commands interrupt manual control;
+        // when they finish via .until(), the scheduler automatically resumes getDefaultCommand()
+        gp2.x().onTrue(joeRobot.getTurret().goLeft());
+        gp2.a().onTrue(joeRobot.getTurret().goHome());
+        gp2.b().onTrue(joeRobot.getTurret().goRight());
+//
+//        // While left bumper is held, trackTarget runs; releasing it resumes default manual control
+//        gp2.leftBumper().whileTrue(joeRobot.getTurret().trackTarget(joeRobot.getVision()));
 
 /*
         gp2.dpadUp().onTrue(hazmatRobot.getLauncher().incrementPower());
@@ -74,11 +102,9 @@ public class Teleop extends NextOpMode {
 //        telemetry.addData("Intake Speed", joeRobot.getIntake().getSpeed());
 //        telemetry.addData("Lift Position", joeRobot.getLift().getPos());
 //        telemetry.addData("Bucket Position", joeRobot.getTransfer().getRampServo().getPosition());
-        telemetry.addData("Launcher Motor Velocity", joeRobot.getLauncher().getLauncherMotor().getEncoderVelocity().into(RotationsPerMinute));
-        telemetry.addData("servoExample position", joeRobot.getServoExample().getServo().getPosition());
-        telemetry.addData("Turret current position", joeRobot.getTurret().getTurretMotor().getEncoderPosition().into(Degrees));
-
-        telemetry.update();
+        Telemetry.log("Launcher Motor Velocity", joeRobot.getLauncher().getLauncherMotor().getEncoderVelocity().into(RotationsPerMinute));
+        Telemetry.log("Turret current position", joeRobot.getTurret().getTurretMotor().getEncoderPosition().into(Degrees));
+        //Telemetry.update();
     }
 
     @Override

@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.IntakeWheels;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
 import org.firstinspires.ftc.teamcode.mechanisms.Turret;
+import org.firstinspires.ftc.teamcode.mechanisms.TurretRamp;
 import org.firstinspires.ftc.teamcode.mechanisms.Vision;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
@@ -45,6 +46,7 @@ public class JoeRobot implements NextRobot {
     private final IntakeWheels intakeWheels = new IntakeWheels();
 
     private final Vision vision = new Vision();
+    private final TurretRamp turretRamp = new TurretRamp();
 
     public Intake getIntake() {
         return intake;
@@ -63,6 +65,8 @@ public class JoeRobot implements NextRobot {
     public IntakeWheels getIntakeWheels() {
         return intakeWheels;
     }
+
+    public TurretRamp getTurretRamp() { return turretRamp;}
 
     private final ContinuousServoExample continuousServoExample = new ContinuousServoExample();
 
@@ -133,7 +137,7 @@ public class JoeRobot implements NextRobot {
     @NonNull
     @Override
     public Set<Mechanism> getMechanisms() {
-        return Set.of(launcher,drivetrain, continuousServoExample, flipper, intakeWheels, turret, vision, intake);
+        return Set.of(launcher,drivetrain, continuousServoExample, flipper, intakeWheels, turret, vision, intake, turretRamp);
     }
 
 }

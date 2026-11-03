@@ -6,6 +6,7 @@ import static com.pedropathing.ivy.commands.Commands.*;
 import static dev.nextftc.units.Units.Degrees;
 import static dev.nextftc.units.Units.RotationsPerMinute;
 
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.ivy.Scheduler;
 
 import org.firstinspires.ftc.teamcode.JoeRobot;
@@ -25,6 +26,7 @@ public class Teleop extends NextOpMode {
     public Teleop(JoeRobot joeRobot) {
         super(joeRobot);
         this.joeRobot = joeRobot;
+        Telemetry.addBackend(PanelsTelemetry.INSTANCE.getFtcTelemetry());
 
         Scheduler.reset();
     }
@@ -68,10 +70,15 @@ public class Teleop extends NextOpMode {
         gp2.rightTrigger().isUnder(.4).whileTrue(joeRobot.getLauncher().stopLauncher());
 
         // Driver selection for the 4 sets of tags using the D-Pad
-        gp2.dpadUp().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_1)));
-        gp2.dpadDown().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_2)));
-        gp2.dpadLeft().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_3)));
-        gp2.dpadRight().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_4)));
+//        gp2.dpadUp().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_1)));
+//        gp2.dpadDown().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_2)));
+//        gp2.dpadLeft().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_3)));
+//        gp2.dpadRight().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_4)));
+
+        gp2.dpadUp().onTrue(joeRobot.getTurretRamp().goForward());
+        gp2.dpadDown().onTrue(joeRobot.getTurretRamp().goBackwards());
+        gp2.dpadLeft().onTrue(joeRobot.getTurretRamp().goHome());
+
 
         gp2.rightBumper().onTrue(joeRobot.getLauncher().increaseSpeed());
         gp2.leftBumper().onTrue(joeRobot.getLauncher().decreaseSpeed());

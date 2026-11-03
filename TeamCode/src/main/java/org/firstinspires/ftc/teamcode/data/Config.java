@@ -21,8 +21,8 @@ public class Config {
     public static int backRightMotor = 1;
     public static int backLeftMotor = 2;
 
-
-
+    public static int rightTurretServo = 5;
+    public static int leftTurretServo = 4;
 
 
 }

@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 import static dev.nextftc.robot.Telemetry.log;
 import static dev.nextftc.units.Units.Degrees;
 
+// Use the specific FTControl Panels annotation
+
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.ivy.Command;
 
 import dev.nextftc.hardware.RobotController;
@@ -13,6 +16,7 @@ import dev.nextftc.units.measuretypes.Angle;
 
 import org.firstinspires.ftc.teamcode.data.Config;
 
+@Configurable
 public class Turret implements Mechanism {
 
     // Hardware specifications for goBILDA 5202/5203 Series 117 RPM Motor (50.9:1 Ratio)
@@ -40,10 +44,12 @@ public class Turret implements Mechanism {
 
     private static final double TOLERANCE_DEGREES = 2.0;
 
-    // Tuning constants
-    public double kP = 0.01;
-    public double kS = 0.05; // Lowered to prevent jitter at resting target
-    public double kV = 0.0000571;
+    public static boolean debugLogsEnabled = false;
+
+    // Tuning constants - Made public static so they appear in FTControl Panels
+    public static double kP = 0.01;
+    public static double kS = 0.05;
+    public static double kV = 0.0000571;
 
     // Lazy-loaded baseline handling & state tracking
     private boolean isZeroed = false;
@@ -62,6 +68,19 @@ public class Turret implements Mechanism {
     public Turret() {
         turretMotor.setZeroPowerBehavior(NextMotor.ZeroPowerBehavior.BRAKE);
 
+        // Initial setup
+        turretMotor.getPositionConstants()
+                .withP(kP)
+                .withS(kS)
+                .withV(kV);
+    }
+
+    /**
+     * Called automatically every hardware loop by the NextFTC/Ivy Scheduler.
+     * This pushes live Panel updates down to the hardware immediately.
+     */
+    @Override
+    public void periodic() {
         turretMotor.getPositionConstants()
                 .withP(kP)
                 .withS(kS)
@@ -102,10 +121,11 @@ public class Turret implements Mechanism {
             // Telemetry calculations relative to zero
             double currentDeg = turretMotor.getEncoderPosition().getMagnitude() - zeroOffsetDeg;
             double errorDeg = currentTargetDeg - currentDeg;
-
-            log("Turret Target (deg)", currentTargetDeg);
-            log("Turret Current (deg)", currentDeg);
-            log("Turret Error (deg)", errorDeg);
+            if (debugLogsEnabled) {
+                log("Turret Target (deg)", currentTargetDeg);
+                log("Turret Current (deg)", currentDeg);
+                log("Turret Error (deg)", errorDeg);
+            }
         })
                 .until(() -> {
                     if (!isZeroed) return false;
@@ -183,11 +203,12 @@ public class Turret implements Mechanism {
             turretMotor.update();
 
             checkEncoderHealth();
-
-            log("Turret Stick Input", stickX);
-            log("Turret Target (deg)", currentTargetDeg);
-            log("Turret Current (deg)", currentDeg);
-            log("Turret Error (deg)", errorDeg);
+            if (debugLogsEnabled) {
+                log("Turret Stick Input", stickX);
+                log("Turret Target (deg)", currentTargetDeg);
+                log("Turret Current (deg)", currentDeg);
+                log("Turret Error (deg)", errorDeg);
+            }
         })
                 .setStart(() -> {
                     // Sync currentTargetDeg to actual motor position whenever this command resumes from an interruption
@@ -202,10 +223,10 @@ public class Turret implements Mechanism {
 
     private void checkEncoderHealth() {
         double rawPos = turretMotor.getEncoderPosition().getMagnitude();
-
-        log("DIAG: Raw Encoder Pos", rawPos);
-        log("DIAG: Zero Offset (deg)", zeroOffsetDeg);
-
+        if (debugLogsEnabled) {
+            log("DIAG: Raw Encoder Pos", rawPos);
+            log("DIAG: Zero Offset (deg)", zeroOffsetDeg);
+        }
         if (!Double.isNaN(lastRawEncoderPos)) {
             double delta = Math.abs(rawPos - lastRawEncoderPos);
 
@@ -218,11 +239,12 @@ public class Turret implements Mechanism {
         }
 
         lastRawEncoderPos = rawPos;
-
-        // Log warnings to Telemetry if encoder appears disconnected or unresponsive
-        log("DIAG: Encoder Delta", lastRawEncoderPos);
-        log("DIAG: Frozen Frame Count", freezeCounter);
-        log("DIAG: Encoder Status", freezeCounter > 25 ? "⚠️ ENCODER FROZEN / DISCONNECTED" : "OK");
+        if (debugLogsEnabled) {
+            // Log warnings to Telemetry if encoder appears disconnected or unresponsive
+            log("DIAG: Encoder Delta", lastRawEncoderPos);
+            log("DIAG: Frozen Frame Count", freezeCounter);
+            log("DIAG: Encoder Status", freezeCounter > 25 ? "⚠️ ENCODER FROZEN / DISCONNECTED" : "OK");
+        }
     }
 
     /**

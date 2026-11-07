@@ -32,12 +32,12 @@ public class Launcher implements Mechanism {
     public static double POLLEN = 0.59;
     public static double NECTAR = 0.5;
 
-    public static double kP = 0.001; // Added for RPM drop recovery
-    public static double kV = 0.0000571;
-    public static double kS = 0.16;
+    public static double kP = 0.002; // Added for RPM drop recovery
+    public static double kV = 0.00022;
+    public static double kS = 0.001;
 
     // Converted from a raw 0-1 power value to an actual RPM target
-    public static double targetRPM = 3500.00;
+    public static double targetRPM = 3000.0;
 
     private double currentVelocity = 0.0;
     private double targetVelocity = 0.0;

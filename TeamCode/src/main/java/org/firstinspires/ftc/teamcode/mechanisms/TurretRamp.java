@@ -15,42 +15,44 @@ public class TurretRamp implements Mechanism {
     public TurretRamp(){
     }
 
-    private final NextServo rightServo = new NextServo(RobotController.expansionHub(), Config.rightTurretServo,0.01, NextMotor.Direction.REVERSE);
+    private final NextServo rightServo = new NextServo(RobotController.expansionHub(), Config.rightTurretServo,0.01, NextMotor.Direction.FORWARD);
 
-    private final NextServo leftServo = new NextServo(RobotController.expansionHub(), Config.leftTurretServo, 0.01, NextMotor.Direction.FORWARD);
+    private final NextServo leftServo = new NextServo(RobotController.expansionHub(), Config.leftTurretServo, 0.01, NextMotor.Direction.REVERSE);
 
-    public static double startPosition = 0.51;
+    public static double startPosition = 0.76;
+
+    public static double currentPosition = startPosition;
 
     public static boolean debugLogsEnabled = false;
 
 
     public Command goHome() {
         return instant(() -> {
-            startPosition = 0.51;
-            leftServo.setPosition(startPosition);
-            rightServo.setPosition(startPosition);
+            currentPosition = startPosition;
+            leftServo.setPosition(currentPosition);
+            rightServo.setPosition(currentPosition);
         });
     }
 
     public Command goForward() {
         return instant(() -> {
-            startPosition = startPosition + 0.01;
-            leftServo.setPosition(startPosition);
-            rightServo.setPosition(startPosition);
+            currentPosition = currentPosition + 0.01;
+            leftServo.setPosition(currentPosition);
+            rightServo.setPosition(currentPosition);
         });
     }
     public Command goBackwards() {
         return instant(() -> {
-            startPosition = startPosition - 0.01;
-            leftServo.setPosition(startPosition);
-            rightServo.setPosition(startPosition);
+            currentPosition = currentPosition - 0.01;
+            leftServo.setPosition(currentPosition);
+            rightServo.setPosition(currentPosition);
         });
     }
 
     @Override
     public void periodic() {
         if (debugLogsEnabled) {
-            Telemetry.log("TurretRamp desired position", startPosition);
+            Telemetry.log("TurretRamp desired position", currentPosition);
             Telemetry.log("Right TurretRamp Servo position", rightServo.getPosition());
             Telemetry.log("Left TurretRamp Servo position", leftServo.getPosition());
         }

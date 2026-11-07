@@ -120,16 +120,23 @@ public class JoeRobot implements NextRobot {
 
     public Command init(){
         return parallel(
-//            launcher.setPollen()
+                turretRamp.goHome()
         );
     }
 
     public Command launch(){
         return sequential(
-            launcher.shoot(),
-            waitMs(4000),
-            launcher.stopLauncher()
+                launcher.shoot(),
+                waitMs(500),
+                intake.forward()
 
+        );
+    }
+
+    public Command stopLauncher(){
+        return sequential(
+                launcher.stopLauncher(),
+                intake.stop()
         );
     }
 

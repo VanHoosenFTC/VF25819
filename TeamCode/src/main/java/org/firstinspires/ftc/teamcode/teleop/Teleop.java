@@ -66,8 +66,8 @@ public class Teleop extends NextOpMode {
         gp2.rightBumper().onTrue(joeRobot.getFlipper().open());
         gp2.rightBumper().onFalse(joeRobot.getFlipper().close());
 
-        gp2.rightTrigger().isOver(.4).whileTrue(joeRobot.getLauncher().shoot());
-        gp2.rightTrigger().isUnder(.4).whileTrue(joeRobot.getLauncher().stopLauncher());
+        gp2.rightTrigger().isOver(.4).whileTrue(joeRobot.launch());
+        gp2.rightTrigger().isUnder(.4).whileTrue(joeRobot.stopLauncher());
 
         // Driver selection for the 4 sets of tags using the D-Pad
 //        gp2.dpadUp().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_1)));

@@ -19,12 +19,11 @@ public class TurretRamp implements Mechanism {
 
     private final NextServo leftServo = new NextServo(RobotController.expansionHub(), Config.leftTurretServo, 0.01, NextMotor.Direction.REVERSE);
 
-    public static double startPosition = 0.76;
+    public static double startPosition = 0.87;
 
     public static double currentPosition = startPosition;
 
     public static boolean debugLogsEnabled = false;
-
 
     public Command goHome() {
         return instant(() -> {

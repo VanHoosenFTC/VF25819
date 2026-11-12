@@ -37,7 +37,7 @@ public class Launcher implements Mechanism {
     public static double kS = 0.001;
 
     // Converted from a raw 0-1 power value to an actual RPM target
-    public static double targetRPM = 3000.0;
+    public static double targetRPM = 3800.0;
 
     private double currentVelocity = 0.0;
     private double targetVelocity = 0.0;
@@ -92,12 +92,21 @@ public class Launcher implements Mechanism {
         });
     }
 
+    public Command reverse() {
+        return instant(() -> {
+            isSpinningCommanded = true;
+            targetVelocity = -targetRPM; // Sync target for the PID and telemetry graph
+
+            // Uses closed-loop PID control instead of raw open-loop throttle
+            launcherMotor.setVelocitySetpoint(RotationsPerMinute.of(targetVelocity));
+        });
+    }
+
     public Command stopLauncher() {
         return instant(() -> {
             isSpinningCommanded = false;
             targetVelocity = 0.0;
-            launcherMotor.setThrottle(0.0);
-            launcherMotor.setVelocitySetpoint(RotationsPerMinute.of(0));
+            launcherMotor.setVelocitySetpoint(RotationsPerMinute.of(targetVelocity));
         });
     }
 
@@ -123,6 +132,7 @@ public class Launcher implements Mechanism {
         checkEncoderHealth();
 
         // LOGGING UPDATES FOR GRAPHING
+        Telemetry.log("Launcher shooting (RPM)", targetRPM);
         Telemetry.log("Launcher Target (RPM)", targetVelocity);
         Telemetry.log("Launcher Current (RPM)", currentVelocity);
 

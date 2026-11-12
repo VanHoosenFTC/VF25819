@@ -32,14 +32,17 @@ public class Teleop extends NextOpMode {
     }
 
     @Override
+    public void disabledPeriodic() {
+        joeRobot.init().schedule();
+    }
+
+    @Override
     public void start() {
         Trigger.Companion.getDefaultEventLoop().clear();
 
         CommandGamepad gp1 = new CommandGamepad(gamepad1);
         CommandGamepad gp2 = new CommandGamepad(gamepad2);
 
-
-        joeRobot.init().schedule();
 
         joeRobot.startDrive(gamepad1);
 
@@ -60,14 +63,14 @@ public class Teleop extends NextOpMode {
 
         gp1.leftTrigger().isOver(.4).whileTrue(joeRobot.getIntake().reverse());
         gp1.leftTrigger().isUnder(.4).whileTrue(joeRobot.getIntake().stop());
-
+        gp1.dpadUp().onTrue(joeRobot.getFlowerPicker().up());
+        gp1.dpadDown().onTrue(joeRobot.getFlowerPicker().down());
         joeRobot.startTurret(gp2);
-
-        gp2.rightBumper().onTrue(joeRobot.getFlipper().open());
-        gp2.rightBumper().onFalse(joeRobot.getFlipper().close());
 
         gp2.rightTrigger().isOver(.4).whileTrue(joeRobot.launch());
         gp2.rightTrigger().isUnder(.4).whileTrue(joeRobot.stopLauncher());
+        gp2.leftTrigger().isOver(.4).whileTrue(joeRobot.reverseLaunch());
+        gp2.leftTrigger().isUnder(.4).whileTrue(joeRobot.stopLauncher());
 
         // Driver selection for the 4 sets of tags using the D-Pad
 //        gp2.dpadUp().onTrue(instant(() -> joeRobot.getVision().setTarget(Vision.TargetTag.TAG_1)));
@@ -106,12 +109,7 @@ public class Teleop extends NextOpMode {
 
     @Override
     public void periodic() {
-//        telemetry.addData("Intake Speed", joeRobot.getIntake().getSpeed());
-//        telemetry.addData("Lift Position", joeRobot.getLift().getPos());
-//        telemetry.addData("Bucket Position", joeRobot.getTransfer().getRampServo().getPosition());
-        Telemetry.log("Launcher Motor Velocity", joeRobot.getLauncher().getLauncherMotor().getEncoderVelocity().into(RotationsPerMinute));
         Telemetry.log("Turret current position", joeRobot.getTurret().getTurretMotor().getEncoderPosition().into(Degrees));
-        //Telemetry.update();
     }
 
     @Override

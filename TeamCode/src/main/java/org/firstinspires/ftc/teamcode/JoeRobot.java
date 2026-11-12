@@ -6,14 +6,16 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 
 import androidx.annotation.NonNull;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.data.Alliance;
-import org.firstinspires.ftc.teamcode.mechanisms.ContinuousServoExample;
+import org.firstinspires.ftc.teamcode.mechanisms.SecondaryIntake;
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.Flipper;
+import org.firstinspires.ftc.teamcode.mechanisms.FlowerPicker;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.IntakeWheels;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
@@ -29,13 +31,25 @@ import dev.nextftc.robot.Mechanism;
 import dev.nextftc.robot.NextRobot;
 import dev.nextftc.robot.drive.DriveCommands;
 import dev.nextftc.robot.triggers.CommandGamepad;
-
+@Configurable
 public class JoeRobot implements NextRobot {
     private  Follower follower;
     private Alliance alliance;
 
 //    private final Vision vision = new Vision();
     private final Launcher launcher = new Launcher();
+
+    public FlowerPicker getFlowerPicker() {
+        return flowerPicker;
+    }
+
+    private final FlowerPicker flowerPicker = new FlowerPicker();
+
+    public SecondaryIntake getSecondaryIntake() {
+        return secondaryIntake;
+    }
+
+    private final SecondaryIntake secondaryIntake = new SecondaryIntake();
 
     private final Turret turret = new Turret();
 
@@ -68,7 +82,7 @@ public class JoeRobot implements NextRobot {
 
     public TurretRamp getTurretRamp() { return turretRamp;}
 
-    private final ContinuousServoExample continuousServoExample = new ContinuousServoExample();
+    private static long launcherWait = 2000;
 
     public JoeRobot(){}
 
@@ -84,8 +98,6 @@ public class JoeRobot implements NextRobot {
     public Turret getTurret() {
         return turret;
     }
-
-    public ContinuousServoExample getContinuousServoExample() { return continuousServoExample;}
 
     public void setAlliance(Alliance alliance){
         this.alliance = alliance;
@@ -120,22 +132,43 @@ public class JoeRobot implements NextRobot {
 
     public Command init(){
         return parallel(
-                turretRamp.goHome()
+                turretRamp.goHome(),
+                flowerPicker.up(),
+                sequential(
+                        flipper.close(),
+                        flipper.open(),
+                        flipper.close()
+                )
         );
     }
 
     public Command launch(){
         return sequential(
                 launcher.shoot(),
-                waitMs(500),
+                waitMs(launcherWait),
+                flipper.open(),
+                secondaryIntake.forward(),
                 intake.forward()
 
         );
     }
 
+    public Command reverseLaunch(){
+        return sequential(
+                launcher.reverse(),
+                flipper.open(),
+                secondaryIntake.reverse(),
+                intake.reverse()
+
+        );
+    }
+
+
     public Command stopLauncher(){
         return sequential(
                 launcher.stopLauncher(),
+                flipper.close(),
+                secondaryIntake.stop(),
                 intake.stop()
         );
     }
@@ -144,7 +177,7 @@ public class JoeRobot implements NextRobot {
     @NonNull
     @Override
     public Set<Mechanism> getMechanisms() {
-        return Set.of(launcher,drivetrain, continuousServoExample, flipper, intakeWheels, turret, vision, intake, turretRamp);
+        return Set.of(launcher,drivetrain, secondaryIntake, flipper, intakeWheels, turret, vision, intake, turretRamp, flowerPicker);
     }
 
 }

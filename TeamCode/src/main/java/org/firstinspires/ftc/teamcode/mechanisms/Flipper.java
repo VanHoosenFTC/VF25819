@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.ivy.Command;
 
 import org.firstinspires.ftc.teamcode.data.Config;
@@ -7,16 +8,16 @@ import org.firstinspires.ftc.teamcode.data.Config;
 import dev.nextftc.hardware.RobotController;
 import dev.nextftc.hardware.actuators.NextServo;
 import dev.nextftc.robot.Mechanism;
-
+@Configurable
 public class Flipper implements Mechanism {
     public Flipper(){
     }
 
-    private final double OPEN_POS = 0.0;
+    private static double OPEN_POS = 0.70;
 
-    private final double CLOSE_POS = 0.33;
+    private final double CLOSE_POS = 0.47;
 
-    private NextServo servo = new NextServo(RobotController.controlHub(), Config.flipper);
+    private NextServo servo = new NextServo(RobotController.expansionHub(), Config.flipper);
 
     public NextServo getServo() {
         return servo;

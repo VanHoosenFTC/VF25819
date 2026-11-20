@@ -31,8 +31,8 @@ public class MoveLeft extends NextOpMode {
 
     private PoseFactory poseFactory = PoseFactory.degrees();
 
-    public Pose start = poseFactory.of(130, -20, 90);
-    public Pose park = poseFactory.of(120, -20, 90);
+    public Pose start = poseFactory.of(130, 20, 270);
+    public Pose park = poseFactory.of(120, 20, 270);
 
     public MoveLeft(@NonNull JoeRobot joeRobot) {
         super(joeRobot);

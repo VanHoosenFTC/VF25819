@@ -7,6 +7,9 @@ import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
+import androidx.annotation.NonNull;
+
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
@@ -20,8 +23,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.JoeRobot;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
-@Autonomous
-public class ShootPreloadPark extends OpMode {
+import dev.nextftc.robot.Telemetry;
+import dev.nextftc.robot.opmode.NextAutonomous;
+import dev.nextftc.robot.opmode.NextOpMode;
+
+@NextAutonomous
+public class ShootPreloadPark extends NextOpMode {
 
     private boolean isRedAlliance = true;
     private Follower follower;
@@ -29,11 +36,11 @@ public class ShootPreloadPark extends OpMode {
     //New Pose and Paths from visulazier go here
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(56, 8, 90);
-    private final Pose path1 = poseFactory.of(56, 30, 90);
-    private final Pose point2 = poseFactory.of(12, 45, 161.1753);
-    private final Pose point3 = poseFactory.of(26.6294, 45.2829, -178.8922);
-    private final Pose point4 = poseFactory.of(12.5559, 95.7544, 105.5806);
+    private final Pose start = poseFactory.of(56, 8, 270);
+    private final Pose path1 = poseFactory.of(56, 30, 270);
+    private final Pose point2 = poseFactory.of(12, 45, 180);
+    private final Pose point3 = poseFactory.of(26.6294, 45.2829, 180);
+    private final Pose point4 = poseFactory.of(12.5559, 95.7544, 180);
 
     public Path path1() {
         return line(start, path1).tangent();
@@ -54,8 +61,11 @@ public class ShootPreloadPark extends OpMode {
 
     private final JoeRobot joeRobot;
 
-    public ShootPreloadPark(JoeRobot joeRobot) {
+    public ShootPreloadPark(@NonNull JoeRobot joeRobot) {
+        super(joeRobot);
         this.joeRobot = joeRobot;
+        Telemetry.addBackend(PanelsTelemetry.INSTANCE.getFtcTelemetry());
+        Scheduler.reset();
     }
 
     private Command autoRoutine() {
@@ -74,15 +84,12 @@ public class ShootPreloadPark extends OpMode {
     }
 
     @Override
-    public void init() {
+    public void disabledPeriodic() {
         Scheduler.reset();
 
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();
-    }
-    @Override
-    public void init_loop() {
 //        if (gamepad1.x) isRedAlliance = false;
 //        if (gamepad1.b) isRedAlliance = true;
 //
@@ -108,7 +115,7 @@ public class ShootPreloadPark extends OpMode {
 
     // from the example code at the end of the autonomous page
     @Override
-    public void loop() {
+    public void periodic() {
         follower.update();
         Scheduler.execute();
         // add your other methods needed in the loop here

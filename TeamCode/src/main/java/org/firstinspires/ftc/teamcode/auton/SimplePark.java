@@ -35,8 +35,8 @@ public class SimplePark extends NextOpMode {
 
     private PoseFactory poseFactory = PoseFactory.degrees();
 
-    public Pose start = poseFactory.of(130, 8, 90);
-    public Pose park = poseFactory.of(130, 20, 90);
+    public Pose start = poseFactory.of(130, 8, 270);
+    public Pose park = poseFactory.of(130, 20, 270);
 
     public SimplePark(@NonNull JoeRobot joeRobot) {
         super(joeRobot);

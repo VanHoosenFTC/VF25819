@@ -3,9 +3,13 @@ package org.firstinspires.ftc.teamcode.auton;
 import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
 import static com.pedropathing.ivy.Scheduler.schedule;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
@@ -18,8 +22,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.JoeRobot;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
-@Autonomous
-public class ShootOneAndPark extends OpMode {
+import dev.nextftc.robot.Telemetry;
+import dev.nextftc.robot.opmode.NextAutonomous;
+import dev.nextftc.robot.opmode.NextOpMode;
+
+@NextAutonomous
+public class ShootOneAndPark extends NextOpMode {
 
     private boolean isRedAlliance = true;
     private Follower follower;
@@ -27,17 +35,17 @@ public class ShootOneAndPark extends OpMode {
     //New Pose and Paths from visulazier go here
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(56, 8, 90);
-    private final Pose path1 = poseFactory.of(56, 30, 90);
-    private final Pose point2 = poseFactory.of(11.5195, 94.0241, 97.0334);
-    private final Pose point2Control1 = poseFactory.of(18, 40, 0);
+    private final Pose start = poseFactory.of(56, 8, 270);
+    private final Pose path1 = poseFactory.of(56, 17, 270);
+    private final Pose point2 = poseFactory.of(11.5195, 94.0241, 270);
+    private final Pose point2Control1 = poseFactory.of(18, 40, 270);
 
     public Path path1() {
-        return line(start, path1).tangent();
+        return line(start, path1).linear(start,path1);
     }
 
     public Path path2() {
-        return curve(path1, point2Control1, point2).tangent();
+        return curve(path1, point2Control1, point2).linear(path1,point2);
     }
 
     //New Pose and Paths from visulazier go above here
@@ -45,7 +53,10 @@ public class ShootOneAndPark extends OpMode {
     private final JoeRobot joeRobot;
 
     public ShootOneAndPark(JoeRobot joeRobot) {
+        super(joeRobot);
         this.joeRobot = joeRobot;
+        Telemetry.addBackend(PanelsTelemetry.INSTANCE.getFtcTelemetry());
+        Scheduler.reset();
     }
 
     private Command autoRoutine() {
@@ -53,21 +64,20 @@ public class ShootOneAndPark extends OpMode {
                 // this is where we create our auton sequence
                 follow(follower, path1()),
                 joeRobot.launch(),
+                waitMs(7000),
+                joeRobot.stopLauncher(),
                 follow(follower, path2())
 
         );
     }
 
     @Override
-    public void init() {
+    public void disabledPeriodic() {
         Scheduler.reset();
 
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();
-    }
-    @Override
-    public void init_loop() {
 //        if (gamepad1.x) isRedAlliance = false;
 //        if (gamepad1.b) isRedAlliance = true;
 //
@@ -93,7 +103,7 @@ public class ShootOneAndPark extends OpMode {
 
     // from the example code at the end of the autonomous page
     @Override
-    public void loop() {
+    public void periodic() {
         follower.update();
         Scheduler.execute();
         // add your other methods needed in the loop here

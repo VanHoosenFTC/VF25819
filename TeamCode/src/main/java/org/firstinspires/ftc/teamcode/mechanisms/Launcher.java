@@ -26,18 +26,19 @@ public class Launcher implements Mechanism {
     private final NextServo launcherServo = new NextServo(RobotController.controlHub(), Config.launcherServo, 0);
 
     // Tuning constants - Made public static so they appear in FTControl Panels
+    // Tuning constants - Made public static so they appear in FTControl Panels
     public static boolean debugLogsEnabled = false;
-    public static double TOLERANCE = 25.0;
+    public static double TOLERANCE = 50.0;
 
     public static double POLLEN = 0.59;
     public static double NECTAR = 0.5;
 
-    public static double kP = 0.002; // Added for RPM drop recovery
-    public static double kV = 0.00022;
-    public static double kS = 0.001;
+    public static double kP = 0.006; // Added for RPM drop recovery
+    public static double kV = 0.000165;
+    public static double kS = 0.06;
 
     // Converted from a raw 0-1 power value to an actual RPM target
-    public static double targetRPM = 3800.0;
+    public static double targetRPM = 3200.0;
 
     private double currentVelocity = 0.0;
     private double targetVelocity = 0.0;
@@ -66,12 +67,12 @@ public class Launcher implements Mechanism {
 
     public Command increaseSpeed() {
         // Increment target by 100 RPM
-        return instant(() -> targetRPM = targetRPM + 100.0);
+        return instant(() -> targetRPM = targetRPM + 25.0);
     }
 
     public Command decreaseSpeed() {
         // Decrement target by 100 RPM
-        return instant(() -> targetRPM = targetRPM - 100.0);
+        return instant(() -> targetRPM = targetRPM - 25.0);
     }
 
     public Command setPollen() {
@@ -105,14 +106,18 @@ public class Launcher implements Mechanism {
     public Command stopLauncher() {
         return instant(() -> {
             isSpinningCommanded = false;
-            targetVelocity = 0.0;
+            targetVelocity = 0;
             launcherMotor.setVelocitySetpoint(RotationsPerMinute.of(targetVelocity));
+            //launcherMotor.setThrottle(0);
         });
     }
 
     public boolean isAtVelocity() {
-        return Math.abs(currentVelocity - targetVelocity) <= TOLERANCE;
+        return isSpinningCommanded
+                && Math.abs(targetVelocity) > 0
+                && Math.abs(currentVelocity - targetVelocity) <= TOLERANCE;
     }
+
 
     /**
      * Called automatically every hardware loop.

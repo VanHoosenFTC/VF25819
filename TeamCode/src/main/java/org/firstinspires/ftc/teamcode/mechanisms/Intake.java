@@ -2,86 +2,91 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import static dev.nextftc.units.Units.RotationsPerMinute;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.ivy.Command;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.data.Config;
 
 import dev.nextftc.hardware.RobotController;
 import dev.nextftc.hardware.actuators.NextMotor;
-import dev.nextftc.hardware.actuators.NextServo;
 import dev.nextftc.robot.Mechanism;
+import dev.nextftc.robot.Telemetry;
 
+@Configurable
 public class Intake implements Mechanism {
+
+    private static boolean debugLogsEnabled = false;
+
+    // Configurable throttle power levels for Panels tuning
+    public static double FORWARD_POWER = 1.0;
+    public static double REVERSE_POWER = -1.0;
+    public static double IDLE_POWER = 1.0;
+
+    // Configurable Feedforward constants
+    public static double kV = 0.0000571;
+    public static double kS = 0.16;
+
+    public static double TOLERANCE = 25.0;
+
     private final NextMotor intakeMotor = new NextMotor(RobotController.controlHub(), Config.intakeMotor);
 
-
-    private final double TOLERANCE = 25;
-    private final double DELTA = 50.0;
-    private final double POINT1 = 16000;
-
-    private final double POLLEN = 0.59;
-    private final double NECTAR = 0.5;
-
-    public double kV = 0.0000571;
-    public double kS = 0.16;
-
-    private double curPower = 0.5;
     private double currentVelocity = 0.0;
     private double targetVelocity = 0.0;
 
-    public Intake(){
+    private boolean isRunningForward = false;
+    private boolean isRunningReverse = false;
+    private boolean isIdle = false;
+
+    public Intake() {
         intakeMotor.getVelocityConstants().setKV(kV);
         intakeMotor.getVelocityConstants().setKS(kS);
         intakeMotor.setDirection(NextMotor.Direction.REVERSE);
     }
 
-
-    public NextMotor getLauncherMotor(){
+    public NextMotor getIntakeMotor() {
         return intakeMotor;
     }
 
-    public void setTargetVelocity(double targetVelocity){
-         intakeMotor.setVelocitySetpoint(RotationsPerMinute.of(targetVelocity));
+    public void setTargetVelocity(double targetVelocity) {
+        this.targetVelocity = targetVelocity;
+        intakeMotor.setVelocitySetpoint(RotationsPerMinute.of(targetVelocity));
     }
 
-    public Command forward(){
-        return instant(()->intakeMotor.setThrottle(1.0));
-    }
-    public Command reverse(){
-        return instant(()->intakeMotor.setThrottle(-1.0));
-    }
-    public Command stop(){
-        return instant(()->intakeMotor.setVelocitySetpoint(RotationsPerMinute.of(0)));
+    public Command forward() {
+        return instant(() -> {
+            isRunningReverse = false;
+            isIdle = false;
+            isRunningForward = true;
+        });
     }
 
-
-
-
-/*
-
-    public Command setPowerThingy() {
-        curPower = 0.5;
-        return instant(() -> launcherMotor.setThrottle(0.5));
+    public Command reverse() {
+        return instant(() -> {
+            isRunningForward = false;
+            isIdle = false;
+            isRunningReverse = true;
+        });
     }
 
-    public Command incrementPower(){
-        curPower +=0.01;
-        return instant(() -> launcherMotor.setThrottle(curPower + 0.01));
+    public Command idle() {
+        return instant(() -> {
+            isRunningForward = false;
+            isRunningReverse = false;
+            isIdle = true;
+        });
     }
 
-    public Command decrementPower(){
-        curPower -=0.01;
-        return instant(() -> launcherMotor.setThrottle(curPower - 0.01));
+    public Command stop() {
+        return instant(() -> {
+            isRunningForward = false;
+            isRunningReverse = false;
+            isIdle = false;
+            targetVelocity = 0.0;
+            intakeMotor.setThrottle(0.0);
+        });
     }
-*/
 
-
-//    public double getMotorSpeed() {
-//        return launcherMotor.getThrottle();
-//    }
-
-    public boolean isAtVelocity(){
+    public boolean isAtVelocity() {
         return Math.abs(currentVelocity - targetVelocity) <= TOLERANCE;
     }
 
@@ -89,8 +94,22 @@ public class Intake implements Mechanism {
     public void periodic() {
         currentVelocity = intakeMotor.getEncoderVelocity().into(RotationsPerMinute);
 
-        isAtVelocity();
+        // Update velocity feedforward constants live if tuned in Panels
+        intakeMotor.getVelocityConstants().setKV(kV);
+        intakeMotor.getVelocityConstants().setKS(kS);
+
+        // Continuously set throttle so Panels slider tweaks apply immediately
+        if (isRunningForward) {
+            intakeMotor.setThrottle(FORWARD_POWER);
+        } else if (isRunningReverse) {
+            intakeMotor.setThrottle(REVERSE_POWER);
+        } else if (isIdle) {
+            intakeMotor.setThrottle(IDLE_POWER);
+        }
+
+        if (debugLogsEnabled) {
+            Telemetry.log("Intake RPM", String.format("%.1f", currentVelocity));
+            Telemetry.log("Intake Throttle", intakeMotor.getThrottle());
+        }
     }
-
-
 }

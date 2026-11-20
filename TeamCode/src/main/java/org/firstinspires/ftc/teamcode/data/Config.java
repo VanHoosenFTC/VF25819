@@ -5,8 +5,8 @@ public class Config {
     //ControlHub
     public static int frontLeftMotor = 3;
     public static int turretMotor = 2;
-    public static int intakeMotor = 1;
-    public static int launcherMotor = 0;
+    public static int launcherMotor = 1;
+    public static int intakeMotor = 0;
 
     public static int launcherServo = 2;
     public static int rightServo = 3;
@@ -21,7 +21,13 @@ public class Config {
     public static int rightTurretServo = 1;
     public static int leftTurretServo = 2;
     public static int secondaryIntakeServo = 3;
+    public static int firingIndexerServo = 3;
     public static int flipper = 4;
+    public static int light = 5;
 
+    //analog inputs
+    public static int firingIndexerEncoder = 1;
+
+    public static int secondaryIntakeEncoder = 1;
 
 }

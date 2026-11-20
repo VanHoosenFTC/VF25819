@@ -14,7 +14,10 @@ import dev.nextftc.robot.Mechanism;
 import dev.nextftc.robot.triggers.CommandGamepad;
 import dev.nextftc.units.measuretypes.Angle;
 
+import org.firstinspires.ftc.teamcode.data.Alliance;
 import org.firstinspires.ftc.teamcode.data.Config;
+
+import java.util.function.Supplier;
 
 @Configurable
 public class Turret implements Mechanism {
@@ -39,8 +42,8 @@ public class Turret implements Mechanism {
     );
 
     private static final Angle HOME_ANGLE = Degrees.of(0);
-    private static final Angle LEFT_ANGLE = Degrees.of(-120);
-    private static final Angle RIGHT_ANGLE = Degrees.of(120);
+    private static final Angle LEFT_ANGLE = Degrees.of(-70);
+    private static final Angle RIGHT_ANGLE = Degrees.of(70);
 
     private static final double TOLERANCE_DEGREES = 2.0;
 
@@ -247,18 +250,22 @@ public class Turret implements Mechanism {
         }
     }
 
-    /**
-     * Actively tracks the chosen AprilTag by updating the positional setpoint directly.
-     */
-    public Command trackTarget(Vision vision) {
-        return infinite(() -> {
-            Double tx = vision.getTargetTx();
 
-            if (tx != null && isZeroed) {
+    public Command trackTarget(Vision vision, Supplier<Alliance> allianceSupplier) {
+        return infinite(() -> {
+            if (!isZeroed) {
+                zeroOffsetDeg = turretMotor.getEncoderPosition().getMagnitude();
+                isZeroed = true;
+            }
+
+            // Dynamically fetch the current alliance state every loop
+            Alliance currentAlliance = allianceSupplier.get();
+            Double tx = vision.getAllianceHiveCenterTx(currentAlliance);
+
+            if (tx != null) {
                 double currentDeg = turretMotor.getEncoderPosition().getMagnitude() - zeroOffsetDeg;
                 currentTargetDeg = currentDeg + tx;
 
-                // Enforce soft limits
                 currentTargetDeg = Math.max(
                         MIN_TURRET_ANGLE_DEG.getMagnitude(),
                         Math.min(MAX_TURRET_ANGLE_DEG.getMagnitude(), currentTargetDeg)
@@ -268,6 +275,10 @@ public class Turret implements Mechanism {
                 turretMotor.setPositionSetpoint(realTarget);
                 turretMotor.update();
             }
+        }).setEnd(interrupted -> {
+            turretMotor.setThrottle(0.0);
         });
     }
+
+
 }

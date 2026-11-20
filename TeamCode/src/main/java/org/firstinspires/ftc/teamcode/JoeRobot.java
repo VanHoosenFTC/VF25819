@@ -14,17 +14,13 @@ import com.pedropathing.ivy.Command;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.data.Alliance;
-import org.firstinspires.ftc.teamcode.mechanisms.FiringIndexer;
 import org.firstinspires.ftc.teamcode.mechanisms.Light;
-import org.firstinspires.ftc.teamcode.mechanisms.SecondaryIntake;
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain;
 import org.firstinspires.ftc.teamcode.mechanisms.Flipper;
 import org.firstinspires.ftc.teamcode.mechanisms.FlowerPicker;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
-import org.firstinspires.ftc.teamcode.mechanisms.IntakeWheels;
 import org.firstinspires.ftc.teamcode.mechanisms.Launcher;
 import org.firstinspires.ftc.teamcode.mechanisms.Turret;
-import org.firstinspires.ftc.teamcode.mechanisms.TurretRamp;
 import org.firstinspires.ftc.teamcode.mechanisms.Vision;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
@@ -46,19 +42,11 @@ public class JoeRobot implements NextRobot {
 //    private final Vision vision = new Vision();
     private final Launcher launcher = new Launcher();
     private final Light light = new Light();
-
-    private final FiringIndexer firingIndexer = new FiringIndexer();
     public FlowerPicker getFlowerPicker() {
         return flowerPicker;
     }
 
     private final FlowerPicker flowerPicker = new FlowerPicker();
-
-    public SecondaryIntake getSecondaryIntake() {
-        return secondaryIntake;
-    }
-
-    private final SecondaryIntake secondaryIntake = new SecondaryIntake();
 
     private final Turret turret = new Turret();
 
@@ -66,10 +54,7 @@ public class JoeRobot implements NextRobot {
 
     private final Flipper flipper = new Flipper();
 
-    private final IntakeWheels intakeWheels = new IntakeWheels();
-
     private final Vision vision = new Vision();
-    private final TurretRamp turretRamp = new TurretRamp();
 
     public Intake getIntake() {
         return intake;
@@ -85,20 +70,10 @@ public class JoeRobot implements NextRobot {
         return flipper;
     }
 
-    public IntakeWheels getIntakeWheels() {
-        return intakeWheels;
-    }
-
-    public TurretRamp getTurretRamp() { return turretRamp;}
-
     private static long launcherWait = 2000;
     private static long indexDelay = 300;
 
     public JoeRobot(){}
-
-    public FiringIndexer getFiringIndexer() {
-        return firingIndexer;
-    }
 
     public void updateAimIndicator() {
         boolean isAimed = (alliance != null) && vision.isAimedAtAllianceHiveCenter(alliance, 3.0);
@@ -154,7 +129,6 @@ public class JoeRobot implements NextRobot {
 
     public Command init(){
         return parallel(
-                turretRamp.goHome(),
                 flowerPicker.up(),
                 sequential(
                         flipper.close(),
@@ -218,7 +192,6 @@ public class JoeRobot implements NextRobot {
                 flipper.open(),
                 waitMs(200),
                 launcher.reverse(),
-                secondaryIntake.reverse(),
                 intake.reverse()
 
         );
@@ -229,58 +202,9 @@ public class JoeRobot implements NextRobot {
         return sequential(
                 launcher.stopLauncher(),
                 flipper.close(),
-                secondaryIntake.stop(),
                 intake.stop()
         );
     }
-
-    public Command indexedLaunch(){
-        return sequential(
-                launcher.shoot(),
-                waitUntil(launcher::isAtVelocity),
-                flipper.open(),
-                intake.forward(),
-                waitMs(indexDelay),
-                firingIndexer.forward(),
-                waitMs(indexDelay),
-                firingIndexer.forward(),
-                waitMs(indexDelay),
-                firingIndexer.forward(),
-                waitMs(indexDelay),
-                firingIndexer.forward(),
-                waitMs(indexDelay),
-                firingIndexer.forward(),
-                waitMs(indexDelay),
-                firingIndexer.forward(),
-                waitMs(indexDelay)
-
-        );
-    }
-
-    public Command reverseIndexedLaunch(){
-        return sequential(
-                flipper.open(),
-                waitMs(200),
-                launcher.reverse(),
-                intake.reverse(),
-                firingIndexer.reverse(),
-                firingIndexer.reverse(),
-                firingIndexer.reverse(),
-                firingIndexer.reverse(),
-                firingIndexer.reverse()
-
-        );
-    }
-
-
-    public Command stopIndexedLauncher(){
-        return sequential(
-                launcher.stopLauncher(),
-                flipper.close(),
-                intake.stop()
-        );
-    }
-
     /**
      * Auto-tracks the alliance Hive centerline while pre-spinning the launcher flywheel.
      * The flipper stays closed until launch() is triggered.
@@ -297,7 +221,7 @@ public class JoeRobot implements NextRobot {
     @NonNull
     @Override
     public Set<Mechanism> getMechanisms() {
-        return Set.of(firingIndexer, launcher,drivetrain, secondaryIntake, flipper, intakeWheels, turret, vision, intake, turretRamp, flowerPicker, light);
+        return Set.of(launcher,drivetrain, flipper, turret, vision, intake, flowerPicker, light);
     }
 
 }

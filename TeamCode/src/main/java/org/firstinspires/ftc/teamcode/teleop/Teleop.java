@@ -89,10 +89,6 @@ public class Teleop extends NextOpMode {
         gp2.leftTrigger().isOver(.4).whileTrue(joeRobot.reverseLaunch());
         gp2.leftTrigger().isUnder(.4).whileTrue(joeRobot.stopLauncher());
 
-        gp2.dpadUp().onTrue(joeRobot.getTurretRamp().goForward());
-        gp2.dpadDown().onTrue(joeRobot.getTurretRamp().goBackwards());
-        gp2.dpadLeft().onTrue(joeRobot.getTurretRamp().goHome());
-
         gp2.rightBumper().onTrue(joeRobot.getLauncher().increaseSpeed());
         gp2.leftBumper().onTrue(joeRobot.getLauncher().decreaseSpeed());
 

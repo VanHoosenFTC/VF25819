@@ -9,25 +9,13 @@ public class Config {
     public static int intakeMotor = 0;
 
     public static int launcherServo = 2;
-    public static int rightServo = 3;
-    public static int leftServo = 4;
-
     //expansion hub
     public static int frontRightMotor = 0;
-
     public static int backRightMotor = 1;
     public static int backLeftMotor = 2;
     public static int flowerPickerServo = 0;
-    public static int rightTurretServo = 1;
-    public static int leftTurretServo = 2;
-    public static int secondaryIntakeServo = 3;
-    public static int firingIndexerServo = 3;
     public static int flipper = 4;
-    public static int light = 5;
+    public static int light = 1;
 
-    //analog inputs
-    public static int firingIndexerEncoder = 1;
-
-    public static int secondaryIntakeEncoder = 1;
 
 }
